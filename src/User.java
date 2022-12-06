@@ -10,7 +10,6 @@ public class User {
         this.userID = userID;
         this.username = " ";
         this.basket = new ArrayList<Book>();
-
     }
 
     public int getUserID(){

@@ -14,7 +14,6 @@ public class Order {
         this.tracker = tracker;
         billingInfo = " ";
         shippingInfo = " ";
-
     }
 
     public int getOrderNumber(){

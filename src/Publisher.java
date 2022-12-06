@@ -12,7 +12,6 @@ public class Publisher {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.bankingAccount = bankingAccount;
-
     }
 
     public String getpName(){

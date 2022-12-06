@@ -10,7 +10,6 @@ public class Tracker {
         this.trackingNumber = trackingNumber;
         this.userID = userID;
         this.orderNum = orderNum;
-
     }
 
     public String getTrackingNumber(){

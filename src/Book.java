@@ -24,7 +24,6 @@ public class Book {
         this.pubPercent = 0.0;
         this.contributingAuthors = new ArrayList<>();
         this.genre = new ArrayList<Genre>();
-
     }
 
     public int getISBN() {

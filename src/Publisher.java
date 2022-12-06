@@ -1,7 +1,8 @@
 public class Publisher {
-    private String pName;
-    private String address;
-    private String email;
-    private String phoneNumber;
-    private int BankingAccount;
+
+    private final String pName;
+    private final String address;
+    private final String email;
+    private final int phoneNumber;
+    private final int BankingAccount;
 }

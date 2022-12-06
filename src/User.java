@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 
 public class User {
-    private int userID;
+
+    private final int userID;
     private String username;
-    private ArrayList basket;
+    private ArrayList<Book> basket;
 }

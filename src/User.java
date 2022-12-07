@@ -43,7 +43,7 @@ public class User {
     }
 
     public void addBook(Book book, int amount) {
-        basket.put(book, ((basket.get(book) == null) ? basket.get(book) : 0) + amount);
+        basket.put(book, ((basket.get(book) == null) ? 0 : basket.get(book)) + amount);
     }
 
     public void removeBook(Book book, int amount) {

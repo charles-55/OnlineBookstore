@@ -1,15 +1,17 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
 
     private final int userID;
     private String username;
-    private ArrayList<Book> basket;
+    private String password;
+    private final HashMap<Book, Integer> basket;
 
-    public User(int userID){
+    public User(int userID, String username, String password) {
         this.userID = userID;
-        this.username = " ";
-        this.basket = new ArrayList<Book>();
+        this.username = username;
+        this.password = password;
+        this.basket = new HashMap<>();
     }
 
     public int getUserID(){
@@ -20,7 +22,11 @@ public class User {
         return username;
     }
 
-    public ArrayList<Book> getBasket(){
+    public String getPassword() {
+        return password;
+    }
+
+    public HashMap<Book, Integer> getBasket(){
         return basket;
     }
 
@@ -28,8 +34,24 @@ public class User {
         this.username = username;
     }
 
-    public void setBasket(ArrayList<Book> basket) {
-        this.basket = basket;
+    public boolean changePassword(String oldPassword, String newPassword) {
+        if(password.equals(oldPassword)) {
+            password = newPassword;
+            return true;
+        }
+        return false;
     }
 
+    public void addBook(Book book, int amount) {
+        basket.put(book, ((basket.get(book) == null) ? basket.get(book) : 0) + amount);
+    }
+
+    public void removeBook(Book book, int amount) {
+        if(!basket.containsKey(book))
+            return;
+        if(basket.get(book) == amount)
+            basket.remove(book);
+        else if(basket.get(book) > amount)
+            basket.put(book, basket.get(book) - amount);
+    }
 }

@@ -3,7 +3,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConnectionManger {
+public class ConnectionManager {
 
     private Connection connection;
     private Statement statement;
@@ -16,7 +16,7 @@ public class ConnectionManger {
     private static final String USER = "postgres";
     private static final String PASSWORD = "1234";
 
-    public ConnectionManger() {
+    public ConnectionManager() {
         try {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);

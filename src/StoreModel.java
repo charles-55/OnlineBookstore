@@ -7,14 +7,14 @@ public class StoreModel {
     private final ArrayList<Tracker> trackers;
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
-    private final ConnectionManger connectionManger;
+    private final ConnectionManager connectionManger;
 
     public StoreModel() {
         users = new ArrayList<>();
         trackers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
-        connectionManger = new ConnectionManger();
+        connectionManger = new ConnectionManager();
     }
 
     public ArrayList<User> getUsers() {

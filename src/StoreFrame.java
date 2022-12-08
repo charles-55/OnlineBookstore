@@ -15,7 +15,7 @@ public class StoreFrame extends JFrame implements StoreView {
     private JButton cartButton;
 
 
-    public StoreFrame(){
+    public StoreFrame() {
         super("Look Inna Book");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
@@ -96,4 +96,5 @@ public class StoreFrame extends JFrame implements StoreView {
     public String getUserInput(String message) {
         return null;
     }
+
 }

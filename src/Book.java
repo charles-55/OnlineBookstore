@@ -5,8 +5,8 @@ public class Book {
     private final int ISBN;
     private final String bookName;
     private final String authorName;
-    private ArrayList<String> contributingAuthors;
-    private ArrayList<Genre> genre;
+    private final ArrayList<String> contributingAuthors;
+    private final ArrayList<Genre> genres;
     private final Publisher publisher;
     private final int numOfPages;
     private final double price;
@@ -22,7 +22,7 @@ public class Book {
         this.price = 0.0;
         this.pubPercent = 0.0;
         this.contributingAuthors = new ArrayList<>();
-        this.genre = new ArrayList<Genre>();
+        this.genres = new ArrayList<Genre>();
     }
 
     public int getISBN() {
@@ -41,8 +41,8 @@ public class Book {
         return contributingAuthors;
     }
 
-    public ArrayList<Genre> getGenre(){
-        return genre;
+    public ArrayList<Genre> getGenres(){
+        return genres;
     }
 
     public Publisher getPublisher(){
@@ -61,12 +61,20 @@ public class Book {
         return pubPercent;
     }
 
-    public void setContributingAuthors(ArrayList<String> contributingAuthors) {
-        this.contributingAuthors = contributingAuthors;
+    public void addContributingAuthor(String contributingAuthor) {
+        contributingAuthors.add(contributingAuthor);
     }
 
-    public void setGenre(ArrayList<Genre> genre) {
-        this.genre = genre;
+    public void removeContributingAuthor(String contributingAuthor) {
+        contributingAuthors.remove(contributingAuthor);
+    }
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre) {
+        genres.remove(genre);
     }
 
     public String getSQLStringRepresentation() {

@@ -100,4 +100,8 @@ public class StoreModel {
     public void addView(StoreView view) {
         views.add(view);
     }
+
+    public void quit() {
+        connectionManger.disconnect();
+    }
 }

@@ -61,7 +61,7 @@ public class StoreModel {
         return false;
     }
 
-    public boolean addBook(Book book, int amount) {
+    public boolean addToInventory(Book book, int amount) {
         if(inventory.get(book) == null) {
             if(connectionManger.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
                 inventory.put(book, amount);
@@ -78,7 +78,7 @@ public class StoreModel {
         return false;
     }
 
-    public boolean removeBook(Book book, int amount) {
+    public boolean removeToInventory(Book book, int amount) {
         if(!inventory.containsKey(book))
             return false;
         if(inventory.get(book) == amount) {

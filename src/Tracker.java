@@ -6,7 +6,7 @@ public class Tracker {
     private Status status;
     public enum Status {SHIPPED, IN_TRANSIT, DELIVERED}
 
-    public Tracker(int trackingNumber, User user, Order order){
+    public Tracker(int trackingNumber, User user, Order order) {
         this.trackingNumber = trackingNumber;
         this.userID = user.getUserID();
         this.orderNum = order.getOrderNumber();

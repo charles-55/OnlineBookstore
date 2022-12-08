@@ -1,27 +1,27 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Order {
 
     private final int orderNumber;
-    private final ArrayList<Book> books;
+    private final Basket basket;
     private String billingInfo;
     private String shippingInfo;
     private final Tracker tracker;
 
-    public Order(int orderNumber, ArrayList<Book> books, Tracker tracker){
+    public Order(int orderNumber, Basket basket, Tracker tracker, String billingInfo, String shippingInfo){
         this.orderNumber = orderNumber;
-        this.books = books;
+        this.basket = basket;
         this.tracker = tracker;
-        billingInfo = " ";
-        shippingInfo = " ";
+        this.billingInfo = billingInfo;
+        this.shippingInfo = shippingInfo;
     }
 
     public int getOrderNumber(){
         return orderNumber;
     }
 
-    public  ArrayList<Book> getBooks(){
-        return books;
+    public Basket getBasket(){
+        return basket;
     }
 
     public String getBillingInfo(){
@@ -45,6 +45,6 @@ public class Order {
     }
 
     public String getSQLStringRepresentation() {
-        return orderNumber + ", " + "";
+        return orderNumber + ", " + basket.getBasketID() + ", '" + billingInfo + "', '" + shippingInfo + "'";
     }
 }

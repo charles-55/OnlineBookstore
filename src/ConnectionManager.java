@@ -10,7 +10,7 @@ public class ConnectionManager {
 
     /* JDBC driver name and database URL */
     private static final String JDBC_DRIVER = "org.postgresql.Driver";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/COMP3005Project";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5433/COMP3005Project";
 
     /* Database credentials */
     private static final String USER = "postgres";
@@ -39,6 +39,15 @@ public class ConnectionManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void disconnect() {
+        try {
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

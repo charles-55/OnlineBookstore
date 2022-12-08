@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class Book {
 
-
     private final int ISBN;
     private final String bookName;
     private final String authorName;
@@ -70,4 +69,19 @@ public class Book {
         this.genre = genre;
     }
 
+    public String getSQLStringRepresentation() {
+        StringBuilder str = new StringBuilder(ISBN + ", '" + bookName + "', '" + authorName + "', '");
+
+        for(int i = 0; i < contributingAuthors.size(); i++) {
+            str.append(contributingAuthors.get(i));
+            if(i == (contributingAuthors.size() - 1)) {
+                break;
+            }
+            str.append(", ");
+        }
+
+        str.append("', '").append(publisher.getName()).append("', ").append(numOfPages).append(", ").append(price).append(", ").append(pubPercent);
+
+        return str.toString();
+    }
 }

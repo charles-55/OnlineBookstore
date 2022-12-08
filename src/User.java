@@ -1,17 +1,18 @@
 import java.util.HashMap;
+import java.util.Random;
 
 public class User {
 
     private final int userID;
     private String username;
     private String password;
-    private final HashMap<Book, Integer> basket;
+    private final Basket basket;
 
     public User(int userID, String username, String password) {
         this.userID = userID;
         this.username = username;
         this.password = password;
-        this.basket = new HashMap<>();
+        this.basket = new Basket((new Random()).nextInt(), userID);
     }
 
     public int getUserID(){
@@ -26,7 +27,7 @@ public class User {
         return password;
     }
 
-    public HashMap<Book, Integer> getBasket(){
+    public Basket getBasket(){
         return basket;
     }
 
@@ -42,16 +43,7 @@ public class User {
         return false;
     }
 
-    public void addBook(Book book, int amount) {
-        basket.put(book, ((basket.get(book) == null) ? 0 : basket.get(book)) + amount);
-    }
-
-    public void removeBook(Book book, int amount) {
-        if(!basket.containsKey(book))
-            return;
-        if(basket.get(book) == amount)
-            basket.remove(book);
-        else if(basket.get(book) > amount)
-            basket.put(book, basket.get(book) - amount);
+    public String getSQLStringRepresentation() {
+        return userID + ", '" + username + "', '" + password + "'";
     }
 }

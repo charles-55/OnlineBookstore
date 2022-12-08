@@ -14,7 +14,7 @@ public class Publisher {
         this.bankingAccount = bankingAccount;
     }
 
-    public String getpName(){
+    public String getName(){
         return pName;
     }
 
@@ -32,5 +32,9 @@ public class Publisher {
 
     public int getBankingAccount(){
         return bankingAccount;
+    }
+
+    public String getSQLStringRepresentation() {
+        return  "'" + pName + "', '" + address + "', '" + email + "', " + phoneNumber + ", " + bankingAccount;
     }
 }

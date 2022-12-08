@@ -43,4 +43,8 @@ public class Order {
     public void setShippingInfo(String shippingInfo){
         this.shippingInfo = shippingInfo;
     }
+
+    public String getSQLStringRepresentation() {
+        return orderNumber + ", " + "";
+    }
 }

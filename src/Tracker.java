@@ -1,26 +1,26 @@
 public class Tracker {
 
-    private final String trackingNumber;
-    private final String userID;
-    private final String orderNum;
+    private final int trackingNumber;
+    private final int userID;
+    private final int orderNum;
     private Status status;
     public enum Status {SHIPPED, IN_TRANSIT, DELIVERED}
 
-    public Tracker(String trackingNumber, String userID, String orderNum){
+    public Tracker(int trackingNumber, User user, Order order){
         this.trackingNumber = trackingNumber;
-        this.userID = userID;
-        this.orderNum = orderNum;
+        this.userID = user.getUserID();
+        this.orderNum = order.getOrderNumber();
     }
 
-    public String getTrackingNumber(){
+    public int getTrackingNumber(){
         return trackingNumber;
     }
 
-    public String getUserID(){
+    public int getUserID(){
         return userID;
     }
 
-    public String getOrderNum(){
+    public int getOrderNum(){
         return orderNum;
     }
 
@@ -30,5 +30,9 @@ public class Tracker {
 
     public void setStatus(Status status){
         this.status = status;
+    }
+
+    public String getSQLStringRepresentation() {
+        return trackingNumber + ", " + userID + ", " + orderNum + ", " + status.toString();
     }
 }

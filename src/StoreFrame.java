@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-public class StoreFrame extends JFrame {
+public class StoreFrame extends JFrame implements StoreView {
 
     //private JTextField searchBar;
     private JPanel cards;
@@ -24,7 +24,7 @@ public class StoreFrame extends JFrame {
         StoreModel model = new StoreModel();
         cards = new JPanel(new CardLayout());
 
-        //model.addStoreModelView(this);
+        model.addView(this);
 
         topPanel = new JPanel();
         contentPane = new JPanel();
@@ -87,4 +87,13 @@ public class StoreFrame extends JFrame {
         this.setVisible(true);
     }
 
+    @Override
+    public void handleMessage(String message) {
+
+    }
+
+    @Override
+    public String getUserInput(String message) {
+        return null;
+    }
 }

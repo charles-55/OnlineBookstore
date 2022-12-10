@@ -1,90 +1,94 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 public class StoreFrame extends JFrame implements StoreView {
 
-    //private JTextField searchBar;
-    private JPanel cards;
+    private CardLayout cardLayout;
+
+    private JPanel profilePanel;
+    private JPanel browsePanel;
+    private JPanel basketPanel;
+
     private JPanel topPanel;
-    private JPanel contentPane;
-    private JPanel buttonPanel;
-
-    private JButton profileButton;
-    private JButton browseButton;
-    private JButton cartButton;
-
+    private JPanel contentPanel;
+    private JPanel bottomPanel;
 
     public StoreFrame() {
         super("Look Inna Book");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
-        this.setResizable(false);
+        profilePanelSetup();
+        browsePanelSetup();
+        basketPanelSetup();
 
-        StoreModel model = new StoreModel();
-        cards = new JPanel(new CardLayout());
+        topPanelSetup();
+        contentPanelSetup();
+        bottomPanelSetup();
 
-        model.addView(this);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.add(topPanel);
+        mainPanel.add(contentPanel);
+        mainPanel.add(bottomPanel);
+
+        this.add(mainPanel);
+        this.setLocationRelativeTo(null);
+        this.setSize(500, 600);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    private void profilePanelSetup() {
+        profilePanel = new JPanel();
+        profilePanel.setBackground(Color.BLUE);
+    }
+
+    private void browsePanelSetup() {
+        browsePanel = new JPanel();
+        browsePanel.setBackground(Color.GREEN);
+    }
+
+    private void basketPanelSetup() {
+        basketPanel = new JPanel();
+        basketPanel.setBackground(Color.BLACK);
+    }
+
+    private void topPanelSetup() {
+        JButton profile = new JButton("Profile");
+        JButton browse = new JButton("Browse");
+        JButton basket = new JButton("Basket");
+
+        profile.addActionListener(e -> cardLayout.show(contentPanel, "Profile"));
+        browse.addActionListener(e -> cardLayout.show(contentPanel, "Browse"));
+        basket.addActionListener(e -> cardLayout.show(contentPanel, "Basket"));
 
         topPanel = new JPanel();
-        contentPane = new JPanel();
-        buttonPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+        topPanel.add(profile);
+        topPanel.add(browse);
+        topPanel.add(basket);
+    }
 
-        profileButton = new JButton();
-        browseButton = new JButton();
-        cartButton = new JButton();
+    private void contentPanelSetup() {
+        cardLayout = new CardLayout();
 
-        buttonPanel.add(profileButton);
-        buttonPanel.add(browseButton);
-        buttonPanel.add(cartButton);
-        buttonPanel.setLayout(new FlowLayout());
+        contentPanel = new JPanel(cardLayout);
+        contentPanel.add(profilePanel, "Profile");
+        contentPanel.add(browsePanel, "Browse");
+        contentPanel.add(basketPanel, "Basket");
 
+        cardLayout.show(contentPanel, "Browse");
+    }
 
-        JPanel profileCard = new JPanel();
-        profileCard.add(profileButton);
+    private void bottomPanelSetup() {
+        bottomPanel = new JPanel();
+    }
 
-        JPanel browseCard = new JPanel();
-        browseCard.add(browseButton);
+    private boolean login() {
+        return false;
+    }
 
-        JPanel cartCard = new JPanel();
-        cartCard.add(cartButton);
+    @Override
+    public void handleLogin(boolean b) {
 
-        cards.add(profileCard,"Profile Card");
-        cards.add(browseCard, "Browse Card");
-        cards.add(cartCard,"Cart Card");
-        getContentPane().add(cards);
-
-        profileButton.addActionListener(new ActionListener() {
-            @Override
-            // Swap to profile card when button is pressed
-            public void actionPerformed(ActionEvent e) {
-                CardLayout layout = (CardLayout) (cards.getLayout());
-                layout.show(cards, "Profile Card");
-            }
-        });
-
-        browseButton.addActionListener(new ActionListener() {
-            @Override
-            // Swap to browse card when button is pressed
-            public void actionPerformed(ActionEvent e) {
-                CardLayout layout = (CardLayout) (cards.getLayout());
-                layout.show(cards, "Browse Card");
-            }
-        });
-
-        cartButton.addActionListener(new ActionListener() {
-            @Override
-            // Swap to cart card when button is pressed
-            public void actionPerformed(ActionEvent e) {
-                CardLayout layout = (CardLayout) (cards.getLayout());
-                layout.show(cards, "gameCard");
-            }
-        });
-
-
-        this.pack();
-        this.setSize(300,300);
-        this.setVisible(true);
     }
 
     @Override
@@ -96,5 +100,4 @@ public class StoreFrame extends JFrame implements StoreView {
     public String getUserInput(String message) {
         return null;
     }
-
 }

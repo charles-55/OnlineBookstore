@@ -13,7 +13,7 @@ public class StoreFrame extends JFrame implements StoreView {
     private JPanel contentPanel;
     private JPanel bottomPanel;
 
-    private StoreModel model;
+    private final StoreModel model;
 
     public StoreFrame() {
         super("Look Inna Book");
@@ -93,12 +93,18 @@ public class StoreFrame extends JFrame implements StoreView {
     }
 
     private boolean login() {
+        JPanel loginPanel = new JPanel(new GridLayout(2, 2));
+        JTextField username = new JTextField();
+        JTextField password = new JTextField();
+
+        loginPanel.add(new JLabel("Username: "));
+        loginPanel.add(username);
+        loginPanel.add(new JLabel("Password: "));
+        loginPanel.add(password);
+
+        JOptionPane.showMessageDialog(this, loginPanel, "Login", JOptionPane.ERROR_MESSAGE);
+
         return false;
-    }
-
-    @Override
-    public void handleLogin(boolean b) {
-
     }
 
     @Override

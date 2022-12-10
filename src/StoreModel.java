@@ -105,17 +105,18 @@ public class StoreModel {
         return currentUser;
     }
 
-    public void login(String username, String password) {
+    public boolean login(String username, String password) {
         for(User user : users) {
             if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 currentUser = user;
                 for(StoreView view : views)
-                    view.handleLogin(true);
-                return;
+                    view.handleMessage("Login successful");
+                return true;
             }
         }
         for(StoreView view : views)
-            view.handleLogin(false);
+            view.handleMessage("Login failed!");
+        return false;
     }
 
     public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {

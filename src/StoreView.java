@@ -1,12 +1,6 @@
 public interface StoreView {
 
     /**
-     * Handles the login attempt for a user.
-     * @param b true if login was successful, false otherwise.
-     */
-    void handleLogin(boolean b);
-
-    /**
      * Handles a message.
      * @param message Message to handle.
      */

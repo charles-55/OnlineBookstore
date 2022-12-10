@@ -51,6 +51,7 @@ public class ConnectionManager {
 
         return sb.toString();
     }
+
     public boolean initializeDatabase() {
         return executeQuery(readFile(DDL));
     }

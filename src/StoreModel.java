@@ -7,14 +7,14 @@ public class StoreModel {
     private final ArrayList<Tracker> trackers;
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
-    private final ConnectionManager connectionManger;
+    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
+    private User currentUser;
 
     public StoreModel() {
         users = new ArrayList<>();
         trackers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
-        connectionManger = new ConnectionManager();
     }
 
     public ArrayList<User> getUsers() {
@@ -30,7 +30,7 @@ public class StoreModel {
     }
 
     public boolean addUser(User user) {
-        if(connectionManger.executeQuery("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
+        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
             users.add(user);
             return true;
         }
@@ -38,7 +38,7 @@ public class StoreModel {
     }
 
     public boolean removeUser(User user) {
-        if(connectionManger.executeQuery("DELETE FROM Customer WHERE CustomerID = " + user.getUserID() + ";")) {
+        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Customer WHERE CustomerID = " + user.getUserID() + ";")) {
             users.add(user);
             return true;
         }
@@ -46,7 +46,7 @@ public class StoreModel {
     }
 
     public boolean addTracker(Tracker tracker) {
-        if(connectionManger.executeQuery("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {
+        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {
             trackers.add(tracker);
             return true;
         }
@@ -54,7 +54,7 @@ public class StoreModel {
     }
 
     public boolean removeTracker(Tracker tracker) {
-        if(connectionManger.executeQuery("DELETE FROM Tracker WHERE TrackerNum = " + tracker.getTrackingNumber() + ";")) {
+        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Tracker WHERE TrackerNum = " + tracker.getTrackingNumber() + ";")) {
             trackers.add(tracker);
             return true;
         }
@@ -63,14 +63,14 @@ public class StoreModel {
 
     public boolean addToInventory(Book book, int amount) {
         if(inventory.get(book) == null) {
-            if(connectionManger.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
+            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
                 inventory.put(book, amount);
                 return true;
             }
         }
         else {
             int newAmount = inventory.get(book) + amount;
-            if(connectionManger.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.put(book, newAmount);
                 return true;
             }
@@ -78,18 +78,18 @@ public class StoreModel {
         return false;
     }
 
-    public boolean removeToInventory(Book book, int amount) {
+    public boolean removeFromInventory(Book book, int amount) {
         if(!inventory.containsKey(book))
             return false;
         if(inventory.get(book) == amount) {
-            if(connectionManger.executeQuery("DELETE FROM Book WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.executeQuery("DELETE FROM Book WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.remove(book);
                 return true;
             }
         }
         else if(inventory.get(book) > amount) {
             int newAmount = inventory.get(book) - amount;
-            if(connectionManger.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.put(book, newAmount);
                 return true;
             }
@@ -101,7 +101,39 @@ public class StoreModel {
         views.add(view);
     }
 
-    public void quit() {
-        connectionManger.disconnect();
+    public void login(String username, String password) {
+        for(User user : users) {
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                currentUser = user;
+                for(StoreView view : views)
+                    view.handleLogin(true);
+                return;
+            }
+        }
+        for(StoreView view : views)
+            view.handleLogin(false);
+    }
+
+    public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {
+        for(Tracker tracker : trackers) {
+            if(tracker.getTrackingNumber() == trackingNumber) {
+                if(CONNECTION_MANAGER.executeQuery("UPDATE Tracker SET Status = " + status.toString()  + " WHERE TrackerNum = " + trackingNumber + ";")) {
+                    tracker.setStatus(status);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean quit() {
+        if(CONNECTION_MANAGER.disconnect()) {
+            for(StoreView view : views)
+                view.handleMessage("Thanks for shopping with us!");
+            return true;
+        }
+        for(StoreView view : views)
+            view.handleMessage("Failed to close connection!");
+        return false;
     }
 }

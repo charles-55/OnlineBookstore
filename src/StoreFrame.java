@@ -94,8 +94,8 @@ public class StoreFrame extends JFrame implements StoreView {
 
     private boolean login() {
         JPanel loginPanel = new JPanel(new GridLayout(2, 2));
-        JTextField username = new JTextField();
-        JTextField password = new JTextField();
+        JTextField username = new JTextField(25);
+        JTextField password = new JTextField(16);
 
         loginPanel.add(new JLabel("Username: "));
         loginPanel.add(username);
@@ -104,16 +104,52 @@ public class StoreFrame extends JFrame implements StoreView {
 
         JOptionPane.showMessageDialog(this, loginPanel, "Login", JOptionPane.ERROR_MESSAGE);
 
+        return model.login(username.getText(), password.getText());
+    }
+
+    private boolean signup() {
+        JPanel signupPanel = new JPanel(new GridLayout(2, 2));
+        JTextField username = new JTextField(25);
+        JTextField password = new JTextField(16);
+
+        signupPanel.add(new JLabel("Username: "));
+        signupPanel.add(username);
+        signupPanel.add(new JLabel("Password: "));
+        signupPanel.add(password);
+
+        JOptionPane.showMessageDialog(this, signupPanel, "Sign up", JOptionPane.ERROR_MESSAGE);
+
+        return model.addUser(username.getText(), password.getText());
+    }
+
+    private boolean changePassword() {
+        JPanel changePasswordPanel = new JPanel(new GridLayout(2, 2));
+        JTextField oldPassword = new JTextField(25);
+        JTextField newPassword = new JTextField(16);
+
+        changePasswordPanel.add(new JLabel("Old password: "));
+        changePasswordPanel.add(oldPassword);
+        changePasswordPanel.add(new JLabel("New password: "));
+        changePasswordPanel.add(newPassword);
+
+        JOptionPane.showMessageDialog(this, changePasswordPanel, "Change password", JOptionPane.ERROR_MESSAGE);
+
+        if(model.getCurrentUser().changePassword(oldPassword.getText(), newPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "Password change successful!");
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(this, "Password change failed!");
         return false;
     }
 
     @Override
     public void handleMessage(String message) {
-
+        JOptionPane.showMessageDialog(this, message);
     }
 
     @Override
     public String getUserInput(String message) {
-        return null;
+        return JOptionPane.showInputDialog(this, message);
     }
 }

@@ -29,7 +29,8 @@ public class StoreModel {
         return inventory;
     }
 
-    public boolean addUser(User user) {
+    public boolean addUser(String username, String password) {
+        User user = new User(users.size() + 1, username, password);
         if(CONNECTION_MANAGER.executeQuery("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
             users.add(user);
             return true;
@@ -37,6 +38,7 @@ public class StoreModel {
         return false;
     }
 
+    /*
     public boolean removeUser(User user) {
         if(CONNECTION_MANAGER.executeQuery("DELETE FROM Customer WHERE CustomerID = " + user.getUserID() + ";")) {
             users.add(user);
@@ -44,6 +46,7 @@ public class StoreModel {
         }
         return false;
     }
+     */
 
     public boolean addTracker(Tracker tracker) {
         if(CONNECTION_MANAGER.executeQuery("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {

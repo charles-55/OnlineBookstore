@@ -13,8 +13,13 @@ public class StoreFrame extends JFrame implements StoreView {
     private JPanel contentPanel;
     private JPanel bottomPanel;
 
+    private StoreModel model;
+
     public StoreFrame() {
         super("Look Inna Book");
+        model = new StoreModel();
+        model.addView(this);
+
         profilePanelSetup();
         browsePanelSetup();
         basketPanelSetup();
@@ -49,6 +54,11 @@ public class StoreFrame extends JFrame implements StoreView {
     private void basketPanelSetup() {
         basketPanel = new JPanel();
         basketPanel.setBackground(Color.BLACK);
+
+//        if(model.getCurrentUser() == null){
+//            String username = JOptionPane.showInputDialog(null, "Please Enter Your Username:", "USERNAME", JOptionPane.QUESTION_MESSAGE);
+//            String password = JOptionPane.showInputDialog(null, "Please Enter Your Password:", "PASSWORD", JOptionPane.QUESTION_MESSAGE);
+//        }
     }
 
     private void topPanelSetup() {

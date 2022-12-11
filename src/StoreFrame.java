@@ -9,8 +9,11 @@ public class StoreFrame extends JFrame implements StoreView {
     private CardLayout cardLayout;
 
     private JPanel profilePanel;
+    private JPanel homePanel;
     private JPanel browsePanel;
     private JPanel basketPanel;
+    private JPanel checkoutPanel;
+    private JPanel trackPanel;
 
     private JPanel topPanel;
     private JPanel contentPanel;
@@ -51,7 +54,11 @@ public class StoreFrame extends JFrame implements StoreView {
 
     private void browsePanelSetup() {
         browsePanel = new JPanel();
-        browsePanel.setBackground(Color.GREEN);
+        browsePanel.setLayout(new BoxLayout(browsePanel, BoxLayout.Y_AXIS));
+
+        for(Book book : model.getInventory().keySet()) {
+            JPanel bookPanel = new JPanel();
+        }
     }
 
     private void basketPanelSetup() {

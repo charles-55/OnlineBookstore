@@ -5,6 +5,7 @@ public class StoreModel {
 
     private final ArrayList<User> users;
     private final ArrayList<Tracker> trackers;
+    private final ArrayList<Publisher> publishers;
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
     private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
@@ -13,9 +14,14 @@ public class StoreModel {
     public StoreModel() {
         users = new ArrayList<>();
         trackers = new ArrayList<>();
+        publishers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
         users.add(new User(1,"Oyinda", "123"));
+    }
+
+    private void initialize() {
+
     }
 
     public ArrayList<User> getUsers() {
@@ -28,6 +34,10 @@ public class StoreModel {
 
     public HashMap<Book, Integer> getInventory() {
         return inventory;
+    }
+
+    public ArrayList<Publisher> getPublishers() {
+        return publishers;
     }
 
     public boolean addUser(String username, String password) {
@@ -59,7 +69,23 @@ public class StoreModel {
 
     public boolean removeTracker(Tracker tracker) {
         if(CONNECTION_MANAGER.executeQuery("DELETE FROM Tracker WHERE TrackerNum = " + tracker.getTrackingNumber() + ";")) {
-            trackers.add(tracker);
+            trackers.remove(tracker);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addPublisher(Publisher publisher) {
+        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Publisher VALUES (" + publisher.getSQLStringRepresentation() + ");")) {
+            publishers.add(publisher);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removePublisher(Publisher publisher) {
+        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Publisher WHERE Pname = " + publisher.getName() + ";")) {
+            trackers.remove(publisher);
             return true;
         }
         return false;
@@ -67,7 +93,7 @@ public class StoreModel {
 
     public boolean addToInventory(Book book, int amount) {
         if(inventory.get(book) == null) {
-            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
+            if((CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) && addPublisher(book.getPublisher())) {
                 inventory.put(book, amount);
                 return true;
             }

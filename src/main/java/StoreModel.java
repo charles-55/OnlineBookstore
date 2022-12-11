@@ -22,7 +22,6 @@ public class StoreModel {
         publishers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
-        users.add(new User(1,"Oyinda", "123"));
     }
 
     public boolean initialize() {

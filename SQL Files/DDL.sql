@@ -49,6 +49,7 @@ CREATE TABLE BookOrder (
 	CustomerID		INT NOT NULL,
 	ISBN			NUMERIC(13, 0) NOT NULL UNIQUE,
 	Amount			INT NOT NULL,
+	TotalPrice	    NUMERIC(5, 2) NOT NULL,
 	BillingInfo		VARCHAR(100) NOT NULL,
 	ShippingInfo	VARCHAR(100) NOT NULL,
 	PRIMARY KEY (OrderNum, ISBN),

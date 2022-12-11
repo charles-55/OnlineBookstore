@@ -147,8 +147,6 @@ public class StoreModel {
     }
 
     public boolean addToCurrentUserBasket(Book book, int amount) {
-        if(amount == 0)
-            return false;
         if(currentUser.getBasket().getCart().get(book) == null) {
             if(currentUser.getBasket().addBook(book, amount)) {
                 if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount + ");")) {
@@ -160,8 +158,45 @@ public class StoreModel {
                     currentUser.getBasket().removeBook(book, amount);
             }
         }
+        else {
+            if(currentUser.getBasket().addBook(book, amount)) {
+                if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + "WHERE ISBN = " + book.getISBN() +";")) {
+                    for(StoreView view : views)
+                        view.handleMessage("Added to basket.");
+                    return true;
+                }
+                else
+                    currentUser.getBasket().removeBook(book, amount);
+            }
+        }
         for(StoreView view : views)
             view.handleMessage("Failed to add to basket.");
+        return false;
+    }
+
+    public boolean removeFromCurrentUserBasket(Book book, int amount) {
+        if(currentUser.getBasket().getCart().get(book) == amount) {
+            if(currentUser.getBasket().removeBook(book, amount)) {
+                if(CONNECTION_MANAGER.executeQuery("DELETE FROM Basket WHERE ISBN = " + book.getISBN() +";")) {
+                    for(StoreView view : views)
+                        view.handleMessage("Removed from basket.");
+                    return true;
+                }
+                else
+                    currentUser.getBasket().addBook(book, amount);
+            }
+        }
+        if(currentUser.getBasket().removeBook(book, amount)) {
+            if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + "WHERE ISBN = " + book.getISBN() +";")) {
+                for(StoreView view : views)
+                    view.handleMessage("Removed from basket.");
+                return true;
+            }
+            else
+                currentUser.getBasket().addBook(book, amount);
+        }
+        for(StoreView view : views)
+            view.handleMessage("Failed to remove from basket.");
         return false;
     }
 

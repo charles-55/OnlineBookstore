@@ -148,14 +148,16 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton signIn = new JButton("Sign in");
 
         profile.addActionListener(e -> {
-            profilePanelSetup();
+            profile.updateUI();
             cardLayout.show(contentPanel, "Profile");
         });
         browse.addActionListener(e -> {
+            browsePanel.removeAll();
             browsePanelSetup();
             cardLayout.show(contentPanel, "Browse");
         });
         basket.addActionListener(e -> {
+            basketPanel.removeAll();
             basketPanelSetup();
             cardLayout.show(contentPanel, "Basket");
         });
@@ -300,6 +302,10 @@ public class StoreFrame extends JFrame implements StoreView {
     @Override
     public void handleMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
+    }
+
+    public void handleBasketUpdate() {
+
     }
 
     @Override

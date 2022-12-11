@@ -33,7 +33,8 @@ public class Basket {
             cart.remove(book);
         else if(cart.get(book) > amount)
             cart.put(book, cart.get(book) - amount);
-        return false;
+        else return amount <= cart.get(book);
+        return true;
     }
 
     public Order checkOut(int orderNum, String billingInfo, String shippingInfo, Tracker tracker) {

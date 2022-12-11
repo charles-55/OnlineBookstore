@@ -154,7 +154,7 @@ public class StoreFrame extends JFrame implements StoreView {
                     signIn.setText("Sign out");
             }
             else {
-                model.logout();
+                logout();
                 signIn.setText("Sign in");
             }
         });

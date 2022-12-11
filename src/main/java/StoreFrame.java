@@ -82,7 +82,6 @@ public class StoreFrame extends JFrame implements StoreView {
     private void basketPanelSetup() {
         basketPanel = new JPanel();
         basketPanel.setBackground(Color.BLACK);
-        //basketPanel.size
 
         if(model.getCurrentUser() == null){
             basketPanel.add(new JLabel("You Are Not Logged In!"));

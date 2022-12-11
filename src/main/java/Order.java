@@ -1,26 +1,29 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Order {
 
     private final int orderNumber;
-    private final Basket basket;
+    private final int userID;
+    private final HashMap<Book, Integer> basket;
     private String billingInfo;
     private String shippingInfo;
     private final Tracker tracker;
 
-    public Order(int orderNumber, Basket basket, Tracker tracker, String billingInfo, String shippingInfo){
+    public Order(int orderNumber, int userID, HashMap<Book, Integer> basket, String billingInfo, String shippingInfo, Tracker tracker) {
         this.orderNumber = orderNumber;
+        this.userID = userID;
         this.basket = basket;
-        this.tracker = tracker;
         this.billingInfo = billingInfo;
         this.shippingInfo = shippingInfo;
+        this.tracker = tracker;
     }
 
     public int getOrderNumber(){
         return orderNumber;
     }
 
-    public Basket getBasket(){
+    public HashMap<Book, Integer> getBasket(){
         return basket;
     }
 
@@ -44,7 +47,12 @@ public class Order {
         this.shippingInfo = shippingInfo;
     }
 
-    public String getSQLStringRepresentation() {
-        return orderNumber + ", " + basket.getBasketID() + ", '" + billingInfo + "', '" + shippingInfo + "'";
+    public ArrayList<String> getSQLStringRepresentation() {
+        ArrayList<String> sqlStringRepresentations = new ArrayList<>();
+
+        for(Book book : basket.keySet())
+            sqlStringRepresentations.add(orderNumber + ", " + userID + ", " + book.getISBN() + ", " + basket.get(book) + ", '" + billingInfo + "', '" + shippingInfo + "'");
+
+        return sqlStringRepresentations;
     }
 }

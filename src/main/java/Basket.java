@@ -32,16 +32,15 @@ public class Basket {
             cart.put(book, cart.get(book) - amount);
     }
 
-    public Order checkOut(int orderNum, Tracker tracker, String billingInfo, String shippingInfo) {
-        return new Order(orderNum, this, tracker, billingInfo, shippingInfo);
+    public Order checkOut(int orderNum, String billingInfo, String shippingInfo, Tracker tracker) {
+        return new Order(orderNum, userID, cart, billingInfo, shippingInfo, tracker);
     }
 
     public ArrayList<String> getSQLStringRepresentation() {
         ArrayList<String> sqlStringRepresentations = new ArrayList<>();
 
-        for(Book book : cart.keySet()) {
+        for(Book book : cart.keySet())
             sqlStringRepresentations.add(userID + ", " + book.getISBN() + ", " + cart.get(book));
-        }
 
         return sqlStringRepresentations;
     }

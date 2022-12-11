@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Random;
-
 public class User {
 
     private final int userID;
@@ -12,7 +9,7 @@ public class User {
         this.userID = userID;
         this.username = username;
         this.password = password;
-        this.basket = new Basket((new Random()).nextInt(), userID);
+        this.basket = new Basket(userID);
     }
 
     public int getUserID(){

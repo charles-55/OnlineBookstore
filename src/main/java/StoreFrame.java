@@ -83,7 +83,7 @@ public class StoreFrame extends JFrame implements StoreView {
 
     private void basketPanelSetup() {
         basketPanel = new JPanel();
-        basketPanel.setBackground(Color.BLACK);
+        basketPanel.setBackground(Color.YELLOW);
 
         if(model.getCurrentUser() == null){
             basketPanel.add(new JLabel("You Are Not Logged In!"));
@@ -147,9 +147,18 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton basket = new JButton("Basket");
         JButton signIn = new JButton("Sign in");
 
-        profile.addActionListener(e -> cardLayout.show(contentPanel, "Profile"));
-        browse.addActionListener(e -> cardLayout.show(contentPanel, "Browse"));
-        basket.addActionListener(e -> cardLayout.show(contentPanel, "Basket"));
+        profile.addActionListener(e -> {
+            profilePanelSetup();
+            cardLayout.show(contentPanel, "Profile");
+        });
+        browse.addActionListener(e -> {
+            browsePanelSetup();
+            cardLayout.show(contentPanel, "Browse");
+        });
+        basket.addActionListener(e -> {
+            basketPanelSetup();
+            cardLayout.show(contentPanel, "Basket");
+        });
         signIn.addActionListener(e -> {
             if(model.getCurrentUser() == null) {
                 if(loginOrSignup())

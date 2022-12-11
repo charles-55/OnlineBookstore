@@ -153,8 +153,10 @@ public class StoreFrame extends JFrame implements StoreView {
                 if(loginOrSignup())
                     signIn.setText("Sign out");
             }
-            else
+            else {
                 model.logout();
+                signIn.setText("Sign in");
+            }
         });
 
         topPanel = new JPanel();
@@ -207,9 +209,6 @@ public class StoreFrame extends JFrame implements StoreView {
         else if(Integer.parseInt(String.valueOf(i)) == 1)
             b = signup();
 
-        if(!b)
-            JOptionPane.showMessageDialog(this, "Login/Signup failed!");
-
         return b;
     }
 
@@ -225,26 +224,45 @@ public class StoreFrame extends JFrame implements StoreView {
 
         JOptionPane.showMessageDialog(this, loginPanel, "Login", JOptionPane.ERROR_MESSAGE);
 
-        return model.login(username.getText(), password.getText());
+        boolean b = model.login(username.getText(), password.getText());
+        if(b)
+            JOptionPane.showMessageDialog(this, "Login successful!");
+        else
+            JOptionPane.showMessageDialog(this, "Login failed!");
+        return b;
     }
 
     private void logout() {
         model.logout();
+        JOptionPane.showMessageDialog(this, "You are now logged out.");
     }
 
     private boolean signup() {
-        JPanel signupPanel = new JPanel(new GridLayout(2, 2));
+        JPanel signupPanel = new JPanel();
+        signupPanel.setLayout(new BoxLayout(signupPanel, BoxLayout.Y_AXIS));
+        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
         JTextField username = new JTextField(25);
         JTextField password = new JTextField(16);
 
-        signupPanel.add(new JLabel("Username: "));
-        signupPanel.add(username);
-        signupPanel.add(new JLabel("Password: "));
-        signupPanel.add(password);
+        inputPanel.add(new JLabel("Username: "));
+        inputPanel.add(username);
+        inputPanel.add(new JLabel("Password: "));
+        inputPanel.add(password);
+        signupPanel.add(inputPanel);
+        signupPanel.add(new JLabel("Password should be between 6-16 characters"));
 
         JOptionPane.showMessageDialog(this, signupPanel, "Sign up", JOptionPane.ERROR_MESSAGE);
+        if((password.getText().length() < 6) || (password.getText().length() > 16)) {
+            JOptionPane.showMessageDialog(this, "Password length is not in range. Sign up failed!");
+            return false;
+        }
 
-        return model.addUser(username.getText(), password.getText()) && model.login(username.getText(), password.getText());
+        boolean b = model.addUser(username.getText(), password.getText()) && model.login(username.getText(), password.getText());
+        if(b)
+            JOptionPane.showMessageDialog(this, "Sign up successful!");
+        else
+            JOptionPane.showMessageDialog(this, "Sign up failed!");
+        return b;
     }
 
     private boolean changePassword() {

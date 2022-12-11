@@ -1,3 +1,9 @@
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,10 +15,14 @@ import java.util.List;
 
 public class ConnectionManager {
 
+    private final StoreModel model;
     private Connection connection;
     private Statement statement;
-    private static final String DDL = "C:\\Users\\carlo\\Desktop\\Charles\\Fall 2022\\COMP 3005\\Project\\SQL Files\\DDL.sql";
-    private static final String DROP_TABLES = "C:\\Users\\carlo\\Desktop\\Charles\\Fall 2022\\COMP 3005\\Project\\SQL Files\\drop_tables.sql";
+
+    /* SQL and Inventory files */
+    private static final String DDL = "SQL Files/DDL.sql";
+    private static final String DROP_TABLES = "SQL Files/drop_tables.sql";
+    private static final String INVENTORY_FILE = "src/main/java/inventory.json";
 
     /* JDBC driver name and database URL */
     private static final String JDBC_DRIVER = "org.postgresql.Driver";
@@ -22,7 +32,9 @@ public class ConnectionManager {
     private static final String USER = "postgres";
     private static final String PASSWORD = "1234";
 
-    public ConnectionManager() {
+    public ConnectionManager(StoreModel model) {
+        this.model = model;
+
         try {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
@@ -53,7 +65,35 @@ public class ConnectionManager {
     }
 
     public boolean initializeDatabase() {
-        return executeQuery(readFile(DDL));
+        if(executeQuery(readFile(DDL))) {
+            try {
+                JsonReader reader = Json.createReader(new FileReader(INVENTORY_FILE));
+                JsonObject starterObject = reader.readObject();
+                JsonArray publishers = starterObject.get("publishers").asJsonArray();
+                JsonArray books = starterObject.get("books").asJsonArray();
+
+                for(Object object : publishers) {
+                    JsonObject jsonObject = (JsonObject) object;
+                    Publisher publisher = new Publisher(jsonObject.get("name").toString(), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
+                    model.addPublisher(publisher);
+                }
+
+                for(Object object : books) {
+                    JsonObject jsonObject = (JsonObject) object;
+                    for(Publisher publisher : model.getPublishers()) {
+                        if(publisher.getName().equals(jsonObject.get("publisher").toString())) {
+                            Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
+                            model.addToInventory(book, Integer.parseInt(jsonObject.get("amount").toString()));
+                        }
+                    }
+                }
+                return true;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
 
     public boolean cleanDatabase() {
@@ -72,12 +112,14 @@ public class ConnectionManager {
 
     public boolean disconnect() {
         try {
-            statement.close();
-            connection.close();
-            return true;
+            if(cleanDatabase()) {
+                statement.close();
+                connection.close();
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 }

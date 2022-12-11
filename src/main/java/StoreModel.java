@@ -12,9 +12,7 @@ public class StoreModel {
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
     private User currentUser;
-
-    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
-    private static final String INVENTORY_FILE = "src/main/java/inventory.json";
+    private final ConnectionManager CONNECTION_MANAGER;
 
     public StoreModel() {
         users = new ArrayList<>();
@@ -22,35 +20,7 @@ public class StoreModel {
         publishers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
-    }
-
-    public boolean initialize() {
-        try {
-            JsonReader reader = Json.createReader(new FileReader(INVENTORY_FILE));
-            JsonObject starterObject = reader.readObject();
-            JsonArray publishers = starterObject.get("publishers").asJsonArray();
-            JsonArray books = starterObject.get("books").asJsonArray();
-
-            for(Object object : publishers) {
-                JsonObject jsonObject = (JsonObject) object;
-                Publisher publisher = new Publisher(jsonObject.get("name").toString(), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
-                addPublisher(publisher);
-            }
-
-            for(Object object : books) {
-                JsonObject jsonObject = (JsonObject) object;
-                for(Publisher publisher : this.publishers) {
-                    if(publisher.getName().equals(jsonObject.get("publisher").toString())) {
-                        Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
-                        addToInventory(book, Integer.parseInt(jsonObject.get("amount").toString()));
-                    }
-                }
-            }
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
+        CONNECTION_MANAGER = new ConnectionManager(this);
     }
 
     public ArrayList<User> getUsers() {
@@ -61,12 +31,16 @@ public class StoreModel {
         return trackers;
     }
 
+    public ArrayList<Publisher> getPublishers() {
+        return publishers;
+    }
+
     public HashMap<Book, Integer> getInventory() {
         return inventory;
     }
 
-    public ArrayList<Publisher> getPublishers() {
-        return publishers;
+    public ConnectionManager getCONNECTION_MANAGER() {
+        return CONNECTION_MANAGER;
     }
 
     public boolean addUser(String username, String password) {
@@ -179,20 +153,14 @@ public class StoreModel {
         for(User user : users) {
             if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 currentUser = user;
-                for(StoreView view : views)
-                    view.handleMessage("Login successful");
                 return true;
             }
         }
-        for(StoreView view : views)
-            view.handleMessage("Login failed!");
         return false;
     }
 
     public void logout() {
         currentUser = null;
-        for(StoreView view : views)
-            view.handleMessage("You are now logged out.");
     }
 
     public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {

@@ -14,7 +14,7 @@ public class StoreWindowController implements WindowListener {
 
     @Override
     public void windowOpened(WindowEvent e) {
-        if(!model.initialize())
+        if(!model.getCONNECTION_MANAGER().initializeDatabase())
             frame.handleMessage("Inventory failed to initialize!");
     }
 

@@ -21,6 +21,7 @@ public class StoreModel {
         inventory = new HashMap<>();
         views = new ArrayList<>();
         CONNECTION_MANAGER = new ConnectionManager(this);
+        initialize();
     }
 
     public void initialize() {
@@ -28,7 +29,6 @@ public class StoreModel {
             for(StoreView view : views)
                 view.handleMessage("Inventory failed to initialize!");
         }
-
     }
 
     public ArrayList<User> getUsers() {

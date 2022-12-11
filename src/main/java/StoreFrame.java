@@ -65,12 +65,12 @@ public class StoreFrame extends JFrame implements StoreView {
             bookPanel.add(new JLabel(book.getAuthorName()));
 
             Choice amount = new Choice();
-            for(int i = 1; i <= model.getInventory().get(book); i++)
+            for(int i = 0; i <= model.getInventory().get(book); i++)
                 amount.add(String.valueOf(i));
             amount.addItemListener(e -> {
                 if(model.getCurrentUser() == null)
                     if(loginOrSignup()) {
-                        model.addToCurrentUserBasket(book, amount.getSelectedIndex() + 1);
+                        model.addToCurrentUserBasket(book, amount.getSelectedIndex());
                     }
             });
 

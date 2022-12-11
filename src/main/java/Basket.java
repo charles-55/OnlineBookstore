@@ -19,17 +19,21 @@ public class Basket {
         return cart;
     }
 
-    public void addBook(Book book, int amount) {
+    public boolean addBook(Book book, int amount) {
+        if(amount < 1)
+            return false;
         cart.put(book, ((cart.get(book) == null) ? 0 : cart.get(book)) + amount);
+        return true;
     }
 
-    public void removeBook(Book book, int amount) {
+    public boolean removeBook(Book book, int amount) {
         if(!cart.containsKey(book))
-            return;
+            return false;
         if(cart.get(book) == amount)
             cart.remove(book);
         else if(cart.get(book) > amount)
             cart.put(book, cart.get(book) - amount);
+        return false;
     }
 
     public Order checkOut(int orderNum, String billingInfo, String shippingInfo, Tracker tracker) {

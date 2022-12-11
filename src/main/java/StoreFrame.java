@@ -46,9 +46,12 @@ public class StoreFrame extends JFrame implements StoreView {
         mainPanel.add(topPanel);
         mainPanel.add(contentPanel);
         mainPanel.add(bottomPanel);
+        JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL);
 
-        this.add(mainPanel);
-        this.setSize(500, 500);
+        this.setLayout(new BorderLayout());
+        this.add(mainPanel, BorderLayout.CENTER);
+        this.add(scrollBar, BorderLayout.EAST);
+        this.pack();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }
@@ -65,9 +68,10 @@ public class StoreFrame extends JFrame implements StoreView {
             browsePanel.removeAll();
 
         for(Book book : model.getInventory().keySet()) {
-            JPanel bookPanel = new JPanel(new GridLayout(1, 3));
+            JPanel bookPanel = new JPanel(new GridLayout(1, 5));
             bookPanel.add(new JLabel(book.getBookName()));
-            bookPanel.add(new JLabel(book.getAuthorName()));
+            bookPanel.add(getCentreAlignedJLabel(book.getAuthorName()));
+            bookPanel.add(getCentreAlignedJLabel("$" + String.format("%.2f", book.getPrice())));
 
             Choice amount = new Choice();
             for(int i = 0; i <= model.getInventory().get(book); i++)
@@ -82,6 +86,26 @@ public class StoreFrame extends JFrame implements StoreView {
             });
 
             bookPanel.add(amount);
+            JButton view = new JButton("View more information");
+            bookPanel.add(view);
+
+            view.addActionListener(e -> {
+                JPanel panel = new JPanel(new GridLayout(6, 2));
+                panel.add(new JLabel("Name: "));
+                panel.add(new JLabel(book.getBookName()));
+                panel.add(new JLabel("Author: "));
+                panel.add(new JLabel(book.getAuthorName()));
+                panel.add(new JLabel("Publisher: "));
+                panel.add(new JLabel(book.getPublisher().getName()));
+                panel.add(new JLabel("Number of pages: "));
+                panel.add(new JLabel(String.valueOf(book.getNumOfPages())));
+                panel.add(new JLabel("ISBN: "));
+                panel.add(new JLabel(String.valueOf(book.getISBN())));
+                panel.add(new JLabel("Price: "));
+                panel.add(new JLabel("$" + String.format("%.2f", book.getPrice())));
+
+                JOptionPane.showMessageDialog(this, panel);
+            });
             browsePanel.add(bookPanel);
         }
         browsePanel.updateUI();
@@ -93,21 +117,21 @@ public class StoreFrame extends JFrame implements StoreView {
 
         if(model.getCurrentUser() == null){
             basketPanel.add(getCentreAlignedJLabel("You Are Not Logged In!"));
+            basketPanel.updateUI();
             return;
         }
 
         HashMap<Book, Integer> cart = model.getCurrentUser().getBasket().getCart();
-        JPanel cartItemsPanel = new JPanel(new GridLayout(cart.size(), 5));
         double subTotal = 0;
 
-        for(Book book : cart.keySet()){
+        for(Book book : cart.keySet()) {
+            JPanel cartItemsPanel = new JPanel(new GridLayout(1, 5));
             double individualTotals = book.getPrice() * cart.get(book);
             subTotal += individualTotals;
 
             cartItemsPanel.add(new JLabel(book.getBookName()));
             cartItemsPanel.add(getCentreAlignedJLabel("$" + String.format("%.2f", book.getPrice())));
-            JLabel amount = new JLabel(String.valueOf(cart.get(book)));
-            cartItemsPanel.add(amount);
+            cartItemsPanel.add(getCentreAlignedJLabel(String.valueOf(cart.get(book))));
 
             JPanel buttonPan = new JPanel(new GridLayout(2, 1));
             JButton addButton = new JButton("+");
@@ -116,8 +140,7 @@ public class StoreFrame extends JFrame implements StoreView {
             buttonPan.add(removeButton);
 
             Dimension buttonSize = new Dimension(10, 10);
-            addButton.setMaximumSize(buttonSize);
-            removeButton.setMaximumSize(buttonSize);
+            buttonPan.setMaximumSize(buttonSize);
 
             addButton.addActionListener(e -> {
                 model.addToCurrentUserBasket(book, 1);
@@ -132,6 +155,7 @@ public class StoreFrame extends JFrame implements StoreView {
             total.setHorizontalAlignment(SwingConstants.RIGHT);
             cartItemsPanel.add(buttonPan);
             cartItemsPanel.add(total);
+            cartItemsPanel.setMaximumSize(new Dimension(500, 50));
             basketPanel.add(cartItemsPanel);
         }
 
@@ -185,9 +209,9 @@ public class StoreFrame extends JFrame implements StoreView {
             else {
                 logout();
                 signIn.setText("Sign in");
-                updateProfilePanel();
-                updateBasketPanel();
             }
+            updateProfilePanel();
+            updateBasketPanel();
         });
 
         topPanel = new JPanel();
@@ -240,6 +264,8 @@ public class StoreFrame extends JFrame implements StoreView {
         else if(Integer.parseInt(String.valueOf(i)) == 1)
             b = signup();
 
+        if(b)
+            ((JButton) (topPanel.getComponent(3))).setText("Sign out");
         return b;
     }
 

@@ -190,6 +190,12 @@ public class StoreModel {
         return false;
     }
 
+    public void logout() {
+        currentUser = null;
+        for(StoreView view : views)
+            view.handleMessage("You are now logged out.");
+    }
+
     public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {
         for(Tracker tracker : trackers) {
             if(tracker.getTrackingNumber() == trackingNumber) {

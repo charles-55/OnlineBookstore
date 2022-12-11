@@ -148,7 +148,14 @@ public class StoreFrame extends JFrame implements StoreView {
         profile.addActionListener(e -> cardLayout.show(contentPanel, "Profile"));
         browse.addActionListener(e -> cardLayout.show(contentPanel, "Browse"));
         basket.addActionListener(e -> cardLayout.show(contentPanel, "Basket"));
-        signIn.addActionListener(e -> loginOrSignup());
+        signIn.addActionListener(e -> {
+            if(model.getCurrentUser() == null) {
+                if(loginOrSignup())
+                    signIn.setText("Sign out");
+            }
+            else
+                model.logout();
+        });
 
         topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
@@ -177,7 +184,7 @@ public class StoreFrame extends JFrame implements StoreView {
         JPanel loginOrSignupPanel = new JPanel(new BorderLayout());
         loginOrSignupPanel.add(new JLabel("Login or Signup:"), BorderLayout.NORTH);
         JButton login = new JButton("Login");
-        JButton signup = new JButton("Signup");
+        JButton signup = new JButton("Sign up");
         loginOrSignupPanel.add(login, BorderLayout.WEST);
         loginOrSignupPanel.add(signup, BorderLayout.EAST);
 
@@ -221,6 +228,10 @@ public class StoreFrame extends JFrame implements StoreView {
         return model.login(username.getText(), password.getText());
     }
 
+    private void logout() {
+        model.logout();
+    }
+
     private boolean signup() {
         JPanel signupPanel = new JPanel(new GridLayout(2, 2));
         JTextField username = new JTextField(25);
@@ -233,7 +244,7 @@ public class StoreFrame extends JFrame implements StoreView {
 
         JOptionPane.showMessageDialog(this, signupPanel, "Sign up", JOptionPane.ERROR_MESSAGE);
 
-        return model.addUser(username.getText(), password.getText());
+        return model.addUser(username.getText(), password.getText()) && model.login(username.getText(), password.getText());
     }
 
     private boolean changePassword() {

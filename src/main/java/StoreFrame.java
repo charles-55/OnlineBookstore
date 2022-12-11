@@ -148,16 +148,20 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton signIn = new JButton("Sign in");
 
         profile.addActionListener(e -> {
-            profile.updateUI();
+            for(Component component: profilePanel.getComponents())
+                profilePanel.remove(component);
+            profilePanelSetup();
             cardLayout.show(contentPanel, "Profile");
         });
         browse.addActionListener(e -> {
-            browsePanel.removeAll();
+            for(Component component: browsePanel.getComponents())
+                browsePanel.remove(component);
             browsePanelSetup();
             cardLayout.show(contentPanel, "Browse");
         });
         basket.addActionListener(e -> {
-            basketPanel.removeAll();
+            for(Component component: basketPanel.getComponents())
+                basketPanel.remove(component);
             basketPanelSetup();
             cardLayout.show(contentPanel, "Basket");
         });

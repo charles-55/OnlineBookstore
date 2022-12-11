@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StoreFrame extends JFrame implements StoreView {
@@ -57,64 +56,69 @@ public class StoreFrame extends JFrame implements StoreView {
 
     private void basketPanelSetup() {
         basketPanel = new JPanel();
-        //basketPanel.setBackground(Color.BLACK);
+        basketPanel.setBackground(Color.BLACK);
+        //basketPanel.size
 
         if(model.getCurrentUser() == null){
-            login();
-        }
-        else{
-            HashMap<Book, Integer> cart = model.getCurrentUser().getBasket().getCart();
-            JPanel cartItemsPanel = new JPanel(new GridLayout(cart.size(), 5));
-            double subTotal = 0;
-
-            for(Book book : cart.keySet()){
-                double individualTotals = book.getPrice() * cart.get(book);
-                subTotal += individualTotals;
-
-                cartItemsPanel.add(new JLabel(book.getBookName()));
-                cartItemsPanel.add(new JLabel("$" + String.format("%.2f", book.getPrice())));
-                JLabel amount = new JLabel(String.valueOf(cart.get(book)));
-                cartItemsPanel.add(amount);
-
-                JButton checkoutButton = new JButton("Checkout");
-                int selectedQuantity =0;
-
-                JPanel buttonPan = new JPanel(new GridLayout(2, 1));
-                JButton addButton = new JButton("+");
-                JButton removeButton = new JButton("-");
-
-                buttonPan.add(addButton);
-                buttonPan.add(removeButton);
-
-                addButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
-                        cart.put(book, cart.get(book) + 1);
-                        System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
-                        //model.getCurrentUser().getBasket().getCart().put(book, cart.get(book) + 1);
-                        //amount.setText(String.valueOf(cart.get(book)));
-                    }
-                });
-
-                removeButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                      //  selectedQuantity--;
-                    }
-                });
-
-                basketPanel.add(cartItemsPanel);
-
+            if(!login()){
+                basketPanel.add(new JLabel("You Are Not Logged In!"));
+                return;
             }
 
+        }
 
-            double taxAmount = 0.13 * subTotal;
-            double shippingAmount = 0;
-            double total = subTotal + taxAmount + shippingAmount;
+        HashMap<Book, Integer> cart = model.getCurrentUser().getBasket().getCart();
+        JPanel cartItemsPanel = new JPanel(new GridLayout(cart.size(), 5));
+        double subTotal = 0;
 
+        for(Book book : cart.keySet()){
+            double individualTotals = book.getPrice() * cart.get(book);
+            subTotal += individualTotals;
+
+            cartItemsPanel.add(new JLabel(book.getBookName()));
+            cartItemsPanel.add(new JLabel("$" + String.format("%.2f", book.getPrice())));
+            JLabel amount = new JLabel(String.valueOf(cart.get(book)));
+            cartItemsPanel.add(amount);
+
+            JButton checkoutButton = new JButton("Checkout");
+            int selectedQuantity =0;
+
+            JPanel buttonPan = new JPanel(new GridLayout(2, 1));
+            JButton addButton = new JButton("+");
+            JButton removeButton = new JButton("-");
+
+            buttonPan.add(addButton);
+            buttonPan.add(removeButton);
+
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
+                    cart.put(book, cart.get(book) + 1);
+                    System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
+                    //model.getCurrentUser().getBasket().getCart().put(book, cart.get(book) + 1);
+                    //amount.setText(String.valueOf(cart.get(book)));
+                }
+            });
+
+            removeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                  //  selectedQuantity--;
+                }
+            });
+
+//                basketPanel.add(cartItemsPanel);
 
         }
+
+
+        double taxAmount = 0.13 * subTotal;
+        double shippingAmount = 0;
+        double total = subTotal + taxAmount + shippingAmount;
+
+        basketPanel.add(cartItemsPanel);
+
     }
 
     private void topPanelSetup() {

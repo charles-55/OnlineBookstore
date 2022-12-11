@@ -148,10 +148,13 @@ public class StoreModel {
 
     public boolean addToCurrentUserBasket(Book book, int amount) {
         if(currentUser.getBasket().getCart().get(book) == null) {
-            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount  + ");")) {
-                currentUser.getBasket().addBook(book, amount);
-                for(StoreView view : views)
-                    view.handleMessage("Added to basket.");
+            if(currentUser.getBasket().addBook(book, amount)) {
+                if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount + ");")) {
+                    for (StoreView view : views)
+                        view.handleMessage("Added to basket.");
+                }
+                else
+                    currentUser.getBasket().removeBook(book, amount);
             }
         }
         return false;

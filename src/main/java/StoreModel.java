@@ -14,7 +14,7 @@ public class StoreModel {
     private User currentUser;
 
     private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
-    private static final String INVENTORY_FILE = "src\\main\\java\\inventory.json";
+    private static final String INVENTORY_FILE = "src/main/java/inventory.json";
 
     public StoreModel() {
         users = new ArrayList<>();

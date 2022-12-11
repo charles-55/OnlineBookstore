@@ -128,9 +128,6 @@ public class StoreFrame extends JFrame implements StoreView {
                   //  selectedQuantity--;
                 }
             });
-
-//                basketPanel.add(cartItemsPanel);
-
         }
 
 

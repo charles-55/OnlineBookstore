@@ -147,16 +147,21 @@ public class StoreModel {
     }
 
     public boolean addToCurrentUserBasket(Book book, int amount) {
+        if(amount == 0)
+            return false;
         if(currentUser.getBasket().getCart().get(book) == null) {
             if(currentUser.getBasket().addBook(book, amount)) {
                 if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount + ");")) {
-                    for (StoreView view : views)
+                    for(StoreView view : views)
                         view.handleMessage("Added to basket.");
+                    return true;
                 }
                 else
                     currentUser.getBasket().removeBook(book, amount);
             }
         }
+        for(StoreView view : views)
+            view.handleMessage("Failed to add to basket.");
         return false;
     }
 

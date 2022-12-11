@@ -5,17 +5,14 @@ import java.awt.event.WindowListener;
 public class StoreWindowController implements WindowListener {
 
     private final StoreModel model;
-    private final StoreFrame frame;
 
-    public StoreWindowController(StoreModel model, StoreFrame frame) {
+    public StoreWindowController(StoreModel model) {
         this.model = model;
-        this.frame = frame;
     }
 
     @Override
     public void windowOpened(WindowEvent e) {
-        if(!model.getCONNECTION_MANAGER().initializeDatabase())
-            frame.handleMessage("Inventory failed to initialize!");
+
     }
 
     @Override

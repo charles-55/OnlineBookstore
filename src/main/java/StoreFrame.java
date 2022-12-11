@@ -27,7 +27,7 @@ public class StoreFrame extends JFrame implements StoreView {
         model = new StoreModel();
         model.addView(this);
 
-        StoreWindowController controller = new StoreWindowController(model, this);
+        StoreWindowController controller = new StoreWindowController(model);
         this.addWindowListener(controller);
 
         profilePanelSetup();

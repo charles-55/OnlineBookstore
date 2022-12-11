@@ -23,6 +23,14 @@ public class StoreModel {
         CONNECTION_MANAGER = new ConnectionManager(this);
     }
 
+    public void initialize() {
+        if(!CONNECTION_MANAGER.initializeDatabase()) {
+            for(StoreView view : views)
+                view.handleMessage("Inventory failed to initialize!");
+        }
+
+    }
+
     public ArrayList<User> getUsers() {
         return users;
     }

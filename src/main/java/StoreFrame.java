@@ -103,9 +103,6 @@ public class StoreFrame extends JFrame implements StoreView {
             JLabel amount = new JLabel(String.valueOf(cart.get(book)));
             cartItemsPanel.add(amount);
 
-            JButton checkoutButton = new JButton("Checkout");
-            int selectedQuantity =0;
-
             JPanel buttonPan = new JPanel(new GridLayout(2, 1));
             JButton addButton = new JButton("+");
             JButton removeButton = new JButton("-");
@@ -113,23 +110,19 @@ public class StoreFrame extends JFrame implements StoreView {
             buttonPan.add(addButton);
             buttonPan.add(removeButton);
 
-            addButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
-                    cart.put(book, cart.get(book) + 1);
-                    System.out.println(model.getCurrentUser().getBasket().getCart().get(book));
-                    //model.getCurrentUser().getBasket().getCart().put(book, cart.get(book) + 1);
-                    //amount.setText(String.valueOf(cart.get(book)));
-                }
+            addButton.addActionListener(e -> {
+                model.addToCurrentUserBasket(book, 1);
+                amount.setText(String.valueOf(cart.get(book)));
             });
 
-            removeButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                  //  selectedQuantity--;
-                }
+            removeButton.addActionListener(e -> {
+                model.removeFromCurrentUserBasket(book, 1);
+                amount.setText(String.valueOf(cart.get(book)));
             });
+
+            cartItemsPanel.add(buttonPan);
+            cartItemsPanel.add(new JLabel("$" + String.format("%.2f", individualTotals)));
+            basketPanel.add(cartItemsPanel);
         }
 
 
@@ -137,7 +130,20 @@ public class StoreFrame extends JFrame implements StoreView {
         double shippingAmount = 0;
         double total = subTotal + taxAmount + shippingAmount;
 
-        basketPanel.add(cartItemsPanel);
+        JPanel summary = new JPanel(new GridLayout(4,2));
+        summary.add(new JLabel("Subtotal"));
+        summary.add(new JLabel("$" + String.format("%.2f", subTotal)));
+
+        summary.add(new JLabel("Tax"));
+        summary.add(new JLabel("$" + String.format("%.2f", taxAmount)));
+
+        summary.add(new JLabel("Shipping"));
+        summary.add(new JLabel("$" + String.format("%.2f", shippingAmount)));
+
+        summary.add(new JLabel("Total"));
+        summary.add(new JLabel("$" + String.format("%.2f", total)));
+
+        basketPanel.add(summary);
 
     }
 

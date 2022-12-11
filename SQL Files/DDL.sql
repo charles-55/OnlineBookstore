@@ -45,12 +45,15 @@ CREATE TABLE Basket (
 );
 
 CREATE TABLE BookOrder (
-	OrderNum		INT NOT NULL,
-	BasketID		INT NOT NULL,
+	OrderNum		INT NOT NULL UNIQUE,
+	CustomerID		INT NOT NULL,
+	ISBN			NUMERIC(13, 0) NOT NULL UNIQUE,
+	Amount			INT NOT NULL,
 	BillingInfo		VARCHAR(100) NOT NULL,
 	ShippingInfo	VARCHAR(100) NOT NULL,
-	PRIMARY KEY (OrderNum),
-	FOREIGN KEY (BasketID) REFERENCES Basket (BasketID)
+	PRIMARY KEY (OrderNum, ISBN),
+	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
 );
 
 CREATE TABLE Tracker (

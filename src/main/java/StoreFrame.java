@@ -146,16 +146,19 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton profile = new JButton("Profile");
         JButton browse = new JButton("Browse");
         JButton basket = new JButton("Basket");
+        JButton signIn = new JButton("Sign in");
 
         profile.addActionListener(e -> cardLayout.show(contentPanel, "Profile"));
         browse.addActionListener(e -> cardLayout.show(contentPanel, "Browse"));
         basket.addActionListener(e -> cardLayout.show(contentPanel, "Basket"));
+        signIn.addActionListener(e -> loginOrSignup());
 
         topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.add(profile);
         topPanel.add(browse);
         topPanel.add(basket);
+        topPanel.add(signIn);
     }
 
     private void contentPanelSetup() {

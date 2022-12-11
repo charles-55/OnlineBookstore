@@ -1,0 +1,64 @@
+CREATE TABLE Customer (
+	CustomerID	INT NOT NULL,
+	Username	VARCHAR(25) UNIQUE NOT NULL,
+	Pword		VARCHAR(16) NOT NULL,
+	PRIMARY KEY (CustomerID)
+);
+
+CREATE TABLE Publisher (
+	Pname			VARCHAR(100) NOT NULL,
+	Address			VARCHAR(100),
+	Email			VARCHAR(100),
+	PhoneNumber		BIGINT,
+	BankingAccount	BIGINT NOT NULL,
+	PRIMARY KEY (Pname)
+);
+
+CREATE TABLE Book (
+	ISBN				NUMERIC(13, 0) NOT NULL,
+	Bname				VARCHAR(100) NOT NULL,
+	AuthorName			VARCHAR(100) NOT NULL,
+	ContributingAuthor	VARCHAR(100),
+	Publisher			VARCHAR(100) NOT NULL,
+	NumOfPages			INT NOT NULL,
+	Price				NUMERIC(5, 2) NOT NULL,
+	PubPercent			NUMERIC(3, 2),
+	Amount				INT NOT NULL,
+	PRIMARY KEY (ISBN),
+	FOREIGN KEY (Publisher) REFERENCES Publisher (Pname)
+);
+
+CREATE TABLE Genre (
+	Gname	VARCHAR(15) NOT NULL,
+	ISBN	NUMERIC(13, 0) NOT NULL,
+	PRIMARY KEY (Gname),
+	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
+);
+
+CREATE TABLE Basket (
+	CustomerID		INT NOT NULL,
+	ISBN			NUMERIC(13, 0) NOT NULL,
+	Amount			INT NOT NULL,
+	PRIMARY KEY (CustomerID, ISBN),
+	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
+);
+
+CREATE TABLE BookOrder (
+	OrderNum		INT NOT NULL,
+	BasketID		INT NOT NULL,
+	BillingInfo		VARCHAR(100) NOT NULL,
+	ShippingInfo	VARCHAR(100) NOT NULL,
+	PRIMARY KEY (OrderNum),
+	FOREIGN KEY (BasketID) REFERENCES Basket (BasketID)
+);
+
+CREATE TABLE Tracker (
+	TrackerNum		INT NOT NULL,
+	CustomerID		INT NOT NULL,
+	OrderNum		INT NOT NULL,
+	Status			VARCHAR(10),
+	PRIMARY KEY (TrackerNum),
+	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+	FOREIGN KEY (OrderNum) REFERENCES BookOrder (OrderNum)
+);

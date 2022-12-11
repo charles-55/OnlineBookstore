@@ -1,0 +1,7 @@
+DROP TABLE Tracker;
+DROP TABLE BookOrder;
+DROP TABLE Basket;
+DROP TABLE Genre;
+DROP TABLE Book;
+DROP TABLE Publisher;
+DROP TABLE Customer;

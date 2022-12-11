@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Book {
 
-    private final String ISBN;
+    private final long ISBN;
     private final String bookName;
     private final String authorName;
     private final ArrayList<String> contributingAuthors;
@@ -13,7 +13,7 @@ public class Book {
     private final double pubPercent;
     public enum Genre {ACTION, ADVENTURE, COMEDY, CRIME, FICTION, HORROR, MYSTERY, ROMANCE, SCI_FI}
 
-    public Book(String ISBN, String bookName, String authorName, Publisher publisher, int numOfPages, double price, double pubPercent){
+    public Book(long ISBN, String bookName, String authorName, Publisher publisher, int numOfPages, double price, double pubPercent){
         this.ISBN = ISBN;
         this.bookName = bookName;
         this.authorName = authorName;
@@ -25,7 +25,7 @@ public class Book {
         this.genres = new ArrayList<Genre>();
     }
 
-    public String getISBN() {
+    public long getISBN() {
         return ISBN;
     }
 

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreFrame extends JFrame implements StoreView {
 
@@ -26,6 +27,9 @@ public class StoreFrame extends JFrame implements StoreView {
         model = new StoreModel();
         model.addView(this);
 
+        StoreWindowController controller = new StoreWindowController(model, this);
+        this.addWindowListener(controller);
+
         profilePanelSetup();
         browsePanelSetup();
         basketPanelSetup();
@@ -41,8 +45,7 @@ public class StoreFrame extends JFrame implements StoreView {
         mainPanel.add(bottomPanel);
 
         this.add(mainPanel);
-        this.setLocationRelativeTo(null);
-        this.setSize(500, 600);
+        this.setSize(500, 500);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }
@@ -57,7 +60,22 @@ public class StoreFrame extends JFrame implements StoreView {
         browsePanel.setLayout(new BoxLayout(browsePanel, BoxLayout.Y_AXIS));
 
         for(Book book : model.getInventory().keySet()) {
-            JPanel bookPanel = new JPanel();
+            JPanel bookPanel = new JPanel(new GridLayout(1, 3));
+            bookPanel.add(new JLabel(book.getBookName()));
+            bookPanel.add(new JLabel(book.getAuthorName()));
+
+            Choice amount = new Choice();
+            for(int i = 1; i <= model.getInventory().get(book); i++)
+                amount.add(String.valueOf(i));
+            amount.addItemListener(e -> {
+                if(model.getCurrentUser() == null)
+                    if(loginOrSignup()) {
+                        model.addToCurrentUserBasket(book, amount.getSelectedIndex() + 1);
+                    }
+            });
+
+            bookPanel.add(amount);
+            browsePanel.add(bookPanel);
         }
     }
 
@@ -67,11 +85,8 @@ public class StoreFrame extends JFrame implements StoreView {
         //basketPanel.size
 
         if(model.getCurrentUser() == null){
-            if(!login()){
-                basketPanel.add(new JLabel("You Are Not Logged In!"));
-                return;
-            }
-
+            basketPanel.add(new JLabel("You Are Not Logged In!"));
+            return;
         }
 
         HashMap<Book, Integer> cart = model.getCurrentUser().getBasket().getCart();
@@ -157,6 +172,39 @@ public class StoreFrame extends JFrame implements StoreView {
 
     private void bottomPanelSetup() {
         bottomPanel = new JPanel();
+    }
+
+    private boolean loginOrSignup() {
+        JPanel loginOrSignupPanel = new JPanel(new BorderLayout());
+        loginOrSignupPanel.add(new JLabel("Login or Signup:"), BorderLayout.NORTH);
+        JButton login = new JButton("Login");
+        JButton signup = new JButton("Signup");
+        loginOrSignupPanel.add(login, BorderLayout.WEST);
+        loginOrSignupPanel.add(signup, BorderLayout.EAST);
+
+        AtomicInteger i = new AtomicInteger(-1);
+        login.addActionListener(e -> {
+            i.set(0);
+            login.setBackground(Color.GREEN);
+            signup.setBackground(null);
+        });
+        signup.addActionListener(e -> {
+            i.set(1);
+            login.setBackground(null);
+            signup.setBackground(Color.GREEN);
+        });
+
+        JOptionPane.showMessageDialog(this, loginOrSignupPanel);
+        boolean b = false;
+        if((Integer.parseInt(String.valueOf(i))) == 0)
+            b = login();
+        else if(Integer.parseInt(String.valueOf(i)) == 1)
+            b = signup();
+
+        if(!b)
+            JOptionPane.showMessageDialog(this, "Login/Signup failed!");
+
+        return b;
     }
 
     private boolean login() {

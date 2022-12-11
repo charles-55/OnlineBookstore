@@ -1,5 +1,8 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.json.*;
 
 public class StoreModel {
 
@@ -8,8 +11,10 @@ public class StoreModel {
     private final ArrayList<Publisher> publishers;
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
-    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
     private User currentUser;
+
+    private static final ConnectionManager CONNECTION_MANAGER = new ConnectionManager();
+    private static final String INVENTORY_FILE = "src\\main\\java\\inventory.json";
 
     public StoreModel() {
         users = new ArrayList<>();
@@ -20,8 +25,33 @@ public class StoreModel {
         users.add(new User(1,"Oyinda", "123"));
     }
 
-    private void initialize() {
+    public boolean initialize() {
+        try {
+            JsonReader reader = Json.createReader(new FileReader(INVENTORY_FILE));
+            JsonObject starterObject = reader.readObject();
+            JsonArray publishers = starterObject.get("publishers").asJsonArray();
+            JsonArray books = starterObject.get("books").asJsonArray();
 
+            for(Object object : publishers) {
+                JsonObject jsonObject = (JsonObject) object;
+                Publisher publisher = new Publisher(jsonObject.get("name").toString(), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
+                addPublisher(publisher);
+            }
+
+            for(Object object : books) {
+                JsonObject jsonObject = (JsonObject) object;
+                for(Publisher publisher : this.publishers) {
+                    if(publisher.getName().equals(jsonObject.get("publisher").toString())) {
+                        Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
+                        addToInventory(book, Integer.parseInt(jsonObject.get("amount").toString()));
+                    }
+                }
+            }
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public ArrayList<User> getUsers() {
@@ -85,7 +115,7 @@ public class StoreModel {
 
     public boolean removePublisher(Publisher publisher) {
         if(CONNECTION_MANAGER.executeQuery("DELETE FROM Publisher WHERE Pname = " + publisher.getName() + ";")) {
-            trackers.remove(publisher);
+            publishers.remove(publisher);
             return true;
         }
         return false;
@@ -93,7 +123,7 @@ public class StoreModel {
 
     public boolean addToInventory(Book book, int amount) {
         if(inventory.get(book) == null) {
-            if((CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) && addPublisher(book.getPublisher())) {
+            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
                 inventory.put(book, amount);
                 return true;
             }
@@ -133,6 +163,17 @@ public class StoreModel {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public boolean addToCurrentUserBasket(Book book, int amount) {
+        if(currentUser.getBasket().getCart().get(book) == null) {
+            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount  + ");")) {
+                currentUser.getBasket().addBook(book, amount);
+                for(StoreView view : views)
+                    view.handleMessage("Added to basket.");
+            }
+        }
+        return false;
     }
 
     public boolean login(String username, String password) {

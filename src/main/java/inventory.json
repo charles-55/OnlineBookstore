@@ -3,36 +3,29 @@
 		{
 			"name": "HarperCollins",
 			"address": "HarperCollins Publishers, 53 Glenmaura National Blvd, Moosic, PA 18507",
-			"email": "HCOrder@harpercollins.com"
+			"email": "HCOrder@harpercollins.com",
 			"phoneNumber": 8443275757,
-			"account": ""
+			"account": 65508
 		},
 		{
 			"name": "Knopf Doubleday Publishing Group",
 			"address": "1745 Broadway New York, NY 10019",
-			"email": "knopfpublicity@randomhouse.com"
+			"email": "knopfpublicity@randomhouse.com",
 			"phoneNumber": 2129407390,
-			"account": ""
+			"account": 95624
 		},
 		{
 			"name": "Penguin Canada",
 			"address": "320 Front St W #1400, Toronto, ON M5V 3B6",
-			"email": "customerservicescanada@penguinrandomhouse.com"
+			"email": "customerservicescanada@penguinrandomhouse.com",
 			"phoneNumber": 8885239292,
-			"account": ""
-		},
-		{
-			"name": "",
-			"address": "",
-			"email": ""
-			"phoneNumber": ,
-			"account": ""
+			"account": 5615163
 		}
 	],
 	
 	"books": [
 		{
-			"ISBN": "9780063282056",
+			"ISBN": 9780063282056,
 			"name": "Babel Indigo Special Edition: A Novel",
 			"author": "R. F Kuang",
 			"publisher": "HarperCollins",
@@ -42,7 +35,7 @@
 			"amount": 100
 		},
 		{
-			"ISBN": "9780735245341",
+			"ISBN": 9780735245341,
 			"name": "OUR MISSING HEARTS: A NOVEL",
 			"author": "Celeste Ng",
 			"publisher": "Penguin Canada",
@@ -52,23 +45,13 @@
 			"amount": 100
 		},
 		{
-			"ISBN": "9781400031702",
+			"ISBN": 9781400031702,
 			"name": "THE SECRET HISTORY",
 			"author": "",
 			"publisher": "Knopf Doubleday Publishing Group",
 			"pages": 576 ,
 			"price": 20.00,
 			"commission": 0.07,
-			"amount": 100
-		},
-		{
-			"ISBN": "",
-			"name": "",
-			"author": "",
-			"publisher": "",
-			"pages": ,
-			"price": ,
-			"commission": ,
 			"amount": 100
 		}
 	]

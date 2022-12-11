@@ -3,11 +3,11 @@ public class Publisher {
     private final String pName;
     private final String address;
     private final String email;
-    private final int phoneNumber;
-    private final String bankingAccount;
+    private final long phoneNumber;
+    private final long bankingAccount;
     private double profit;
 
-    public Publisher(String pName, String address, String email, int phoneNumber, String bankingAccount){
+    public Publisher(String pName, String address, String email, long phoneNumber, long bankingAccount){
         this.pName = pName;
         this.address = address;
         this.email = email;
@@ -28,11 +28,11 @@ public class Publisher {
         return email;
     }
 
-    public int getPhoneNumber(){
+    public long getPhoneNumber(){
         return phoneNumber;
     }
 
-    public String getBankingAccount(){
+    public long getBankingAccount(){
         return bankingAccount;
     }
 

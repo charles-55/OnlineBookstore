@@ -3,18 +3,12 @@ import java.util.HashMap;
 
 public class Basket {
 
-    private final int basketID;
     private final int userID;
     private final HashMap<Book, Integer> cart;
 
-    public Basket(int basketID, int userID) {
-        this.basketID = basketID;
+    public Basket(int userID) {
         this.userID = userID;
         cart = new HashMap<>();
-    }
-
-    public int getBasketID() {
-        return basketID;
     }
 
     public int getUserID() {
@@ -43,11 +37,10 @@ public class Basket {
     }
 
     public ArrayList<String> getSQLStringRepresentation() {
-        ArrayList<Book> books = new ArrayList<>(cart.keySet());
         ArrayList<String> sqlStringRepresentations = new ArrayList<>();
 
-        for(int i = 0; i < cart.size(); i++) {
-            sqlStringRepresentations.add(basketID + ", " + userID + ", " + books.get(i) + ", " + cart.get(books.get(i)));
+        for(Book book : cart.keySet()) {
+            sqlStringRepresentations.add(userID + ", " + book.getISBN() + ", " + cart.get(book));
         }
 
         return sqlStringRepresentations;

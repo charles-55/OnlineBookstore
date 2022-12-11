@@ -160,7 +160,7 @@ public class StoreModel {
         }
         else {
             if(currentUser.getBasket().addBook(book, amount)) {
-                if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + "WHERE ISBN = " + book.getISBN() +";")) {
+                if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
                     for(StoreView view : views)
                         view.handleMessage("Added to basket.");
                     return true;
@@ -187,7 +187,7 @@ public class StoreModel {
             }
         }
         if(currentUser.getBasket().removeBook(book, amount)) {
-            if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + "WHERE ISBN = " + book.getISBN() +";")) {
+            if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
                 for(StoreView view : views)
                     view.handleMessage("Removed from basket.");
                 return true;

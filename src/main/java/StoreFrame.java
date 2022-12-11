@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,9 +28,14 @@ public class StoreFrame extends JFrame implements StoreView {
         StoreWindowController controller = new StoreWindowController(model);
         this.addWindowListener(controller);
 
-        profilePanelSetup();
-        browsePanelSetup();
-        basketPanelSetup();
+        profilePanel = new JPanel();
+        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
+        browsePanel = new JPanel();
+        browsePanel.setLayout(new BoxLayout(browsePanel, BoxLayout.Y_AXIS));
+        basketPanel = new JPanel();
+        basketPanel.setLayout(new BoxLayout(basketPanel, BoxLayout.Y_AXIS));
+
+        updateBrowsePanel();
 
         topPanelSetup();
         contentPanelSetup();
@@ -50,14 +53,16 @@ public class StoreFrame extends JFrame implements StoreView {
         this.setVisible(true);
     }
 
-    private void profilePanelSetup() {
-        profilePanel = new JPanel();
-        profilePanel.setBackground(Color.BLUE);
+    private void updateProfilePanel() {
+        if(profilePanel.getComponentCount() > 0)
+            profilePanel.removeAll();
+
+        profilePanel.updateUI();
     }
 
-    private void browsePanelSetup() {
-        browsePanel = new JPanel();
-        browsePanel.setLayout(new BoxLayout(browsePanel, BoxLayout.Y_AXIS));
+    private void updateBrowsePanel() {
+        if(browsePanel.getComponentCount() > 0)
+            browsePanel.removeAll();
 
         for(Book book : model.getInventory().keySet()) {
             JPanel bookPanel = new JPanel(new GridLayout(1, 3));
@@ -79,14 +84,15 @@ public class StoreFrame extends JFrame implements StoreView {
             bookPanel.add(amount);
             browsePanel.add(bookPanel);
         }
+        browsePanel.updateUI();
     }
 
-    private void basketPanelSetup() {
-        basketPanel = new JPanel();
-        basketPanel.setBackground(Color.YELLOW);
+    private void updateBasketPanel() {
+        if(basketPanel.getComponentCount() > 0)
+            basketPanel.removeAll();
 
         if(model.getCurrentUser() == null){
-            basketPanel.add(new JLabel("You Are Not Logged In!"));
+            basketPanel.add(getCentreAlignedJLabel("You Are Not Logged In!"));
             return;
         }
 
@@ -99,32 +105,35 @@ public class StoreFrame extends JFrame implements StoreView {
             subTotal += individualTotals;
 
             cartItemsPanel.add(new JLabel(book.getBookName()));
-            cartItemsPanel.add(new JLabel("$" + String.format("%.2f", book.getPrice())));
+            cartItemsPanel.add(getCentreAlignedJLabel("$" + String.format("%.2f", book.getPrice())));
             JLabel amount = new JLabel(String.valueOf(cart.get(book)));
             cartItemsPanel.add(amount);
 
             JPanel buttonPan = new JPanel(new GridLayout(2, 1));
             JButton addButton = new JButton("+");
             JButton removeButton = new JButton("-");
-
             buttonPan.add(addButton);
             buttonPan.add(removeButton);
 
+            Dimension buttonSize = new Dimension(10, 10);
+            addButton.setMaximumSize(buttonSize);
+            removeButton.setMaximumSize(buttonSize);
+
             addButton.addActionListener(e -> {
                 model.addToCurrentUserBasket(book, 1);
-                amount.setText(String.valueOf(cart.get(book)));
+                updateBasketPanel();
             });
-
             removeButton.addActionListener(e -> {
                 model.removeFromCurrentUserBasket(book, 1);
-                amount.setText(String.valueOf(cart.get(book)));
+                updateBasketPanel();
             });
 
+            JLabel total = new JLabel("$" + String.format("%.2f", individualTotals));
+            total.setHorizontalAlignment(SwingConstants.RIGHT);
             cartItemsPanel.add(buttonPan);
-            cartItemsPanel.add(new JLabel("$" + String.format("%.2f", individualTotals)));
+            cartItemsPanel.add(total);
             basketPanel.add(cartItemsPanel);
         }
-
 
         double taxAmount = 0.13 * subTotal;
         double shippingAmount = 0;
@@ -132,19 +141,22 @@ public class StoreFrame extends JFrame implements StoreView {
 
         JPanel summary = new JPanel(new GridLayout(4,2));
         summary.add(new JLabel("Subtotal"));
-        summary.add(new JLabel("$" + String.format("%.2f", subTotal)));
-
+        summary.add(getCentreAlignedJLabel("$" + String.format("%.2f", subTotal)));
         summary.add(new JLabel("Tax"));
-        summary.add(new JLabel("$" + String.format("%.2f", taxAmount)));
-
+        summary.add(getCentreAlignedJLabel("$" + String.format("%.2f", taxAmount)));
         summary.add(new JLabel("Shipping"));
-        summary.add(new JLabel("$" + String.format("%.2f", shippingAmount)));
-
+        summary.add(getCentreAlignedJLabel("$" + String.format("%.2f", shippingAmount)));
         summary.add(new JLabel("Total"));
-        summary.add(new JLabel("$" + String.format("%.2f", total)));
+        summary.add(getCentreAlignedJLabel("$" + String.format("%.2f", total)));
 
         basketPanel.add(summary);
+        basketPanel.updateUI();
+    }
 
+    private JLabel getCentreAlignedJLabel(String text) {
+        JLabel jLabel = new JLabel(text);
+        jLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        return jLabel;
     }
 
     private void topPanelSetup() {
@@ -154,21 +166,15 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton signIn = new JButton("Sign in");
 
         profile.addActionListener(e -> {
-            for(Component component: profilePanel.getComponents())
-                profilePanel.remove(component);
-            profilePanelSetup();
+            updateProfilePanel();
             cardLayout.show(contentPanel, "Profile");
         });
         browse.addActionListener(e -> {
-            for(Component component: browsePanel.getComponents())
-                browsePanel.remove(component);
-            browsePanelSetup();
+            updateBrowsePanel();
             cardLayout.show(contentPanel, "Browse");
         });
         basket.addActionListener(e -> {
-            for(Component component: basketPanel.getComponents())
-                basketPanel.remove(component);
-            basketPanelSetup();
+            updateBasketPanel();
             cardLayout.show(contentPanel, "Basket");
         });
         signIn.addActionListener(e -> {
@@ -179,6 +185,8 @@ public class StoreFrame extends JFrame implements StoreView {
             else {
                 logout();
                 signIn.setText("Sign in");
+                updateProfilePanel();
+                updateBasketPanel();
             }
         });
 

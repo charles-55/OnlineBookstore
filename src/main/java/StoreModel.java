@@ -191,6 +191,55 @@ public class StoreModel {
         return false;
     }
 
+    public HashMap<Book, Integer> search(String search, String criteria, ArrayList<Book.Genre> genres) {
+        HashMap<Book, Integer> result = new HashMap<>();
+        ArrayList<Book> tempResult = new ArrayList<>();
+
+        switch (criteria) {
+            case "book":
+                for (Book book : inventory.keySet()) {
+                    if (search.equals(book.getBookName()))
+                        tempResult.add(book);
+                }
+                break;
+            case "author":
+                for (Book book : inventory.keySet()) {
+                    if (search.equals(book.getAuthorName()))
+                        tempResult.add(book);
+                }
+                break;
+            case "isbn":
+                for (Book book : inventory.keySet()) {
+                    if (Long.parseLong(search) == book.getISBN())
+                        tempResult.add(book);
+                }
+                break;
+        }
+
+        if(tempResult.isEmpty()) {
+            for(StoreView view : views)
+                view.handleMessage("Search not found. Showing all books.");
+            return inventory;
+        }
+
+        for(Book book : tempResult) {
+            for(Book.Genre genre : genres) {
+                if(book.getGenres().contains(genre))
+                    result.put(book, inventory.get(book));
+            }
+        }
+
+        if(result.isEmpty()) {
+            for(StoreView view : views)
+                view.handleMessage("Search not found. Showing similar results.");
+            for(Book book : tempResult)
+                result.put(book, inventory.get(book));
+            return result;
+        }
+
+        return result;
+    }
+
     public int getNewOrderNumber() {
         newOrderNumber++;
         return newOrderNumber - 1;

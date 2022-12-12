@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -99,6 +100,7 @@ public class StoreFrame extends JFrame implements StoreView {
         signOut.addActionListener(e -> {
             signOut();
             ((JButton) (topPanel.getComponent(3))).setText("Sign out");
+            ((JButton) (topPanel.getComponent(3))).updateUI();
         });
 
         profilePanel.add(menuPanel);
@@ -159,14 +161,86 @@ public class StoreFrame extends JFrame implements StoreView {
         if(browsePanel.getComponentCount() > 0)
             browsePanel.removeAll();
 
-        for(Book book : model.getInventory().keySet()) {
+        JPanel filterOptions = new JPanel(new GridLayout(1, 2));
+
+        JPanel info = new JPanel(new GridLayout(3, 1));
+        JRadioButton name = new JRadioButton("Book name");
+        name.setActionCommand("book");
+        JRadioButton author = new JRadioButton("Author name");
+        author.setActionCommand("author");
+        JRadioButton isbn = new JRadioButton("ISBN");
+        isbn.setActionCommand("isbn");
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(name);
+        buttonGroup.add(author);
+        buttonGroup.add(isbn);
+        info.add(name);
+        info.add(author);
+        info.add(isbn);
+
+        JPanel genreOptions = new JPanel();
+        genreOptions.setLayout(new BoxLayout(genreOptions, BoxLayout.Y_AXIS));
+        JCheckBox[] checkboxes = new JCheckBox[Book.Genre.values().length];
+        for(int i = 0; i < Book.Genre.values().length; i++) {
+            checkboxes[i] = new JCheckBox(Book.Genre.values()[i].toString());
+            genreOptions.add(checkboxes[i]);
+        }
+        final ArrayList<Book.Genre>[] selectedGenres = new ArrayList[]{new ArrayList<>()};
+
+        filterOptions.add(info);
+        filterOptions.add(genreOptions);
+
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
+        JTextField searchBar = new JTextField();
+        JButton searchButton = new JButton("Search");
+        JButton filters = new JButton("Filters");
+
+        searchPanel.add(searchBar);
+        searchPanel.add(searchButton);
+        searchPanel.add(filters);
+
+        searchButton.addActionListener(e -> {
+            browsePanel.removeAll();
+            browsePanel.add(searchPanel);
+            browsePanel.add(getBookSearch(searchBar.getText(), buttonGroup.getSelection().getActionCommand(), selectedGenres[0]));
+            browsePanel.updateUI();
+        });
+        filters.addActionListener(e -> {
+            selectedGenres[0] = new ArrayList<>();
+            JOptionPane.showMessageDialog(this, filterOptions);
+            for(JCheckBox checkbox : checkboxes) {
+                if(checkbox.isSelected()) {
+                    for(Book.Genre genre : Book.Genre.values()) {
+                        if(genre.toString().equals(checkbox.getText()))
+                            selectedGenres[0].add(genre);
+                    }
+                }
+            }
+        });
+
+        browsePanel.add(searchPanel);
+        browsePanel.add(getBookSearch(null, null, null));
+        browsePanel.updateUI();
+    }
+
+    private JPanel getBookSearch(String search, String criteria, ArrayList<Book.Genre> genres) {
+        HashMap<Book, Integer> results;
+        if((search == null) && (criteria == null) && (genres == null))
+            results = model.getInventory();
+        else
+            results = model.search(search, criteria, genres);
+
+        JPanel allBooksPanel = new JPanel();
+        allBooksPanel.setLayout(new BoxLayout(allBooksPanel, BoxLayout.Y_AXIS));
+        for(Book book : results.keySet()) {
             JPanel bookPanel = new JPanel(new GridLayout(1, 5));
             bookPanel.add(new JLabel(book.getBookName().replace("\"", "")));
             bookPanel.add(getCentreAlignedJLabel(book.getAuthorName().replace("\"", "")));
             bookPanel.add(getCentreAlignedJLabel("$" + String.format("%.2f", book.getPrice())));
 
             Choice amount = new Choice();
-            for(int i = 0; i <= model.getInventory().get(book); i++)
+            for(int i = 0; i <= results.get(book); i++)
                 amount.add(String.valueOf(i));
             amount.addItemListener(e -> {
                 if(model.getCurrentUser() == null) {
@@ -198,9 +272,9 @@ public class StoreFrame extends JFrame implements StoreView {
 
                 JOptionPane.showMessageDialog(this, panel);
             });
-            browsePanel.add(bookPanel);
+            allBooksPanel.add(bookPanel);
         }
-        browsePanel.updateUI();
+        return allBooksPanel;
     }
 
     private void updateBasketPanel() {
@@ -311,7 +385,7 @@ public class StoreFrame extends JFrame implements StoreView {
 
         billingPanel.add(new JLabel("Name: "));
         billingPanel.add(name);
-        billingPanel.add(new JLabel("Card number: "));
+        billingPanel.add(new JLabel("Card number (should be 16 digits long): "));
         billingPanel.add(cardNum);
         billingPanel.add(new JLabel("Expiration date: "));
         billingPanel.add(expiryDate);
@@ -331,14 +405,22 @@ public class StoreFrame extends JFrame implements StoreView {
         JButton placeOrder = new JButton("Place Order");
         placeOrder.addActionListener(e -> {
             try {
-                BillingInfo billingInfo = new BillingInfo(name.getText(), Long.parseLong(cardNum.getText()), Integer.parseInt(expiryDate.getText()), Integer.parseInt(cvv.getText()), billingAddress.getText(), billingPostalCode.getText(), billingCity.getText(), billingCountry.getText());
-                Order order = model.getCurrentUser().getBasket().checkOut(model.getNewOrderNumber(), totalPrice, billingInfo, (shippingAddress.getText() + ",\n" + shippingCity.getText() + ", " + shippingCountry.getText() + ", " + shippingPostalCode));
-                if(model.processOrder(order))
+                StringBuilder date = new StringBuilder(expiryDate.getText());
+                if(date.charAt(0) == '0') {
+                    date = new StringBuilder();
+                    for(int i = 1; i < expiryDate.getText().length(); i++)
+                        date.append(expiryDate.getText().charAt(i));
+                }
+                BillingInfo billingInfo = new BillingInfo(name.getText(), Long.parseLong(cardNum.getText()), Integer.parseInt(date.toString()), Integer.parseInt(cvv.getText()), billingAddress.getText(), billingPostalCode.getText(), billingCity.getText(), billingCountry.getText());
+                Order order = model.getCurrentUser().getBasket().checkOut(model.getNewOrderNumber(), totalPrice, billingInfo, (shippingAddress.getText() + ", \n" + shippingCity.getText() + ", " + shippingCountry.getText() + ", " + shippingPostalCode.getText()));
+                if(model.processOrder(order)) {
                     JOptionPane.showMessageDialog(this, "Order placed successfully!");
+                    cardLayout.show(contentPanel, "Browse");
+                }
                 else
                     JOptionPane.showMessageDialog(this, "Failed to place order!");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Invalid input!");
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
         checkoutPanel.add(placeOrder);

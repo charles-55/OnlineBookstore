@@ -52,7 +52,8 @@
 			"pages": 576 ,
 			"price": 20.00,
 			"commission": 0.07,
-			"amount": 100
+			"amount": 100,
+			"genres": "C"
 		}
 	]
 }

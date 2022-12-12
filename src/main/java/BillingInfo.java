@@ -11,9 +11,9 @@ public class BillingInfo {
 
     public BillingInfo(String name, long cardNumber, int expiryDate, int cvv, String address, String postalCode, String city, String country) throws Exception {
         if(String.valueOf(cardNumber).length() != 16)
-            throw new Exception();
-        if(!((String.valueOf(expiryDate).charAt(2) == '2') && (expiryDate <= 1230) && (expiryDate >= 122)))
-            throw new Exception();
+            throw new Exception("Invalid card number input!");
+        if(!((String.valueOf(expiryDate).charAt(String.valueOf(expiryDate).length() - 2) == '2') && (expiryDate <= 1230) && (expiryDate >= 122)))
+            throw new Exception("Invalid expiry date input!");
         if(cvv > 999)
             throw new Exception();
         this.name = name;

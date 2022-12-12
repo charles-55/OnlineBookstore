@@ -1,8 +1,5 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.json.*;
 
 public class StoreModel {
 
@@ -12,6 +9,8 @@ public class StoreModel {
     private final HashMap<Book, Integer> inventory;
     private final ArrayList<StoreView> views;
     private User currentUser;
+    private int newOrderNumber;
+    private int newTrackingNumber;
     private final ConnectionManager CONNECTION_MANAGER;
 
     public StoreModel() {
@@ -20,6 +19,8 @@ public class StoreModel {
         publishers = new ArrayList<>();
         inventory = new HashMap<>();
         views = new ArrayList<>();
+        newOrderNumber = 1;
+        newTrackingNumber = 1;
         CONNECTION_MANAGER = new ConnectionManager(this);
         initialize();
     }
@@ -59,16 +60,6 @@ public class StoreModel {
         }
         return false;
     }
-
-    /*
-    public boolean removeUser(User user) {
-        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Customer WHERE CustomerID = " + user.getUserID() + ";")) {
-            users.add(user);
-            return true;
-        }
-        return false;
-    }
-     */
 
     public boolean addTracker(Tracker tracker) {
         if(CONNECTION_MANAGER.executeQuery("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {
@@ -200,7 +191,47 @@ public class StoreModel {
         return false;
     }
 
-    public boolean login(String username, String password) {
+    public int getNewOrderNumber() {
+        newOrderNumber++;
+        return newOrderNumber - 1;
+    }
+
+    public int getNewTrackingNumber() {
+        newTrackingNumber++;
+        return newTrackingNumber - 1;
+    }
+
+    public boolean processOrder(Order order) {
+        for (String s : order.getSQLStringRepresentation()) {
+            if (!CONNECTION_MANAGER.executeQuery("INSERT INTO BookOrder VALUES (" + s + ");")) {
+                currentUser.getBasket().undoCheckOut(order);
+                return false;
+            }
+        }
+        for (Book book : order.getBasket().keySet()) {
+            if (!removeFromInventory(book, order.getBasket().get(book))) {
+                currentUser.getBasket().undoCheckOut(order);
+                return false;
+            }
+        }
+        currentUser.addOrder(order);
+        trackers.add(new Tracker(getNewTrackingNumber(), currentUser, order.getOrderNumber()));
+        return true;
+    }
+
+    public String getOrderStatus(Order order) {
+        for(Tracker tracker : trackers) {
+            if(tracker.getOrderNum() == order.getOrderNumber())
+                return tracker.getStatus().toString();
+        }
+        return "Order not found.";
+    }
+
+    public void updateOrderStatus(Tracker tracker, Tracker.Status status) {
+        tracker.setStatus(status);
+    }
+
+    public boolean signIn(String username, String password) {
         for(User user : users) {
             if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 currentUser = user;
@@ -210,8 +241,18 @@ public class StoreModel {
         return false;
     }
 
-    public void logout() {
+    public void signOut() {
         currentUser = null;
+    }
+
+    public boolean changeCurrentUserPassword(String oldPassword, String newPassword) {
+        if(currentUser.changePassword(oldPassword, newPassword)) {
+            if(CONNECTION_MANAGER.executeQuery("UPDATE Customer SET Pword = '" + newPassword  + "' WHERE CustomerID = " + currentUser.getUserID() + ";")) {
+                return true;
+            }
+            currentUser.changePassword(newPassword, oldPassword);
+        }
+        return false;
     }
 
     public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {

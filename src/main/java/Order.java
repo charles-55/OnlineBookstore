@@ -6,17 +6,17 @@ public class Order {
     private final int orderNumber;
     private final int userID;
     private final HashMap<Book, Integer> basket;
-    private String billingInfo;
-    private String shippingInfo;
-    private final Tracker tracker;
+    private final double totalPrice;
+    private final BillingInfo billingInfo;
+    private final String shippingInfo;
 
-    public Order(int orderNumber, int userID, HashMap<Book, Integer> basket, String billingInfo, String shippingInfo, Tracker tracker) {
+    public Order(int orderNumber, int userID, HashMap<Book, Integer> basket, double totalPrice, BillingInfo billingInfo, String shippingInfo) {
         this.orderNumber = orderNumber;
         this.userID = userID;
         this.basket = basket;
+        this.totalPrice = totalPrice;
         this.billingInfo = billingInfo;
         this.shippingInfo = shippingInfo;
-        this.tracker = tracker;
     }
 
     public int getOrderNumber(){
@@ -27,7 +27,11 @@ public class Order {
         return basket;
     }
 
-    public String getBillingInfo(){
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public BillingInfo getBillingInfo(){
         return billingInfo;
     }
 
@@ -35,23 +39,11 @@ public class Order {
         return shippingInfo;
     }
 
-    public Tracker getTracker(){
-        return tracker;
-    }
-
-    public void setBillingInfo(String billingInfo){
-        this.billingInfo = billingInfo;
-    }
-
-    public void setShippingInfo(String shippingInfo){
-        this.shippingInfo = shippingInfo;
-    }
-
     public ArrayList<String> getSQLStringRepresentation() {
         ArrayList<String> sqlStringRepresentations = new ArrayList<>();
 
         for(Book book : basket.keySet())
-            sqlStringRepresentations.add(orderNumber + ", " + userID + ", " + book.getISBN() + ", " + basket.get(book) + ", '" + billingInfo + "', '" + shippingInfo + "'");
+            sqlStringRepresentations.add(orderNumber + ", " + userID + ", " + book.getISBN() + ", " + basket.get(book)+ ", " + totalPrice + ", " + billingInfo.getCardNumber() + ", '" + shippingInfo.replace("\n", " ") + "'");
 
         return sqlStringRepresentations;
     }

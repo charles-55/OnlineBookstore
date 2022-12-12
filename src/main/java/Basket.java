@@ -37,8 +37,14 @@ public class Basket {
         return true;
     }
 
-    public Order checkOut(int orderNum, String billingInfo, String shippingInfo, Tracker tracker) {
-        return new Order(orderNum, userID, cart, billingInfo, shippingInfo, tracker);
+    public Order checkOut(int orderNum, double totalPrice, BillingInfo billingInfo, String shippingInfo) {
+        Order order = new Order(orderNum, userID, cart, totalPrice, billingInfo, shippingInfo);
+        cart.clear();
+        return order;
+    }
+
+    public void undoCheckOut(Order order) {
+        cart.putAll(order.getBasket());
     }
 
     public ArrayList<String> getSQLStringRepresentation() {

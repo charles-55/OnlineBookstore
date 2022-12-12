@@ -341,6 +341,7 @@ public class StoreFrame extends JFrame implements StoreView {
                 JOptionPane.showMessageDialog(this, "Invalid input!");
             }
         });
+        checkoutPanel.add(placeOrder);
 
         checkoutPanel.updateUI();
     }

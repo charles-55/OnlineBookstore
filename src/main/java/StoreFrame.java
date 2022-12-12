@@ -10,8 +10,7 @@ public class StoreFrame extends JFrame implements StoreView {
     private final JPanel profilePanel;
     private final JPanel browsePanel;
     private final JPanel basketPanel;
-    private JPanel checkoutPanel;
-    private JPanel trackPanel;
+    private final JPanel checkoutPanel;
 
     private JPanel topPanel;
     private JPanel contentPanel;

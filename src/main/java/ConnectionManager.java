@@ -71,22 +71,22 @@ public class ConnectionManager {
 
                 for(Object object : publishers) {
                     JsonObject jsonObject = (JsonObject) object;
-                    Publisher publisher = new Publisher(jsonObject.get("name").toString(), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
+                    Publisher publisher = new Publisher(jsonObject.get("name").toString().replace("\"", ""), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
                     model.addPublisher(publisher);
                 }
 
                 for(Object object : books) {
                     JsonObject jsonObject = (JsonObject) object;
                     for(Publisher publisher : model.getPublishers()) {
-                        if(publisher.getName().equals(jsonObject.get("publisher").toString())) {
+                        if(publisher.getName().equals(jsonObject.get("publisher").toString().replace("\"", ""))) {
                             Book.Genre genre = Book.Genre.UNKNOWN;
                             for(Book.Genre g : Book.Genre.values()) {
-                                if(g.toString().equals(jsonObject.get("genre").toString())) {
+                                if(g.toString().equals(jsonObject.get("genre").toString().replace("\"", ""))) {
                                     genre = g;
                                     break;
                                 }
                             }
-                            Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, genre, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
+                            Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString().replace("\"", "").replace('\'', '\"'), jsonObject.get("author").toString().replace("\"", ""), publisher, genre, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
                             model.addToInventory(book, Integer.parseInt(jsonObject.get("amount").toString()));
                         }
                     }
@@ -125,6 +125,7 @@ public class ConnectionManager {
 
     public boolean disconnect() {
         try {
+            cleanDatabase();
             statement.close();
             connection.close();
             return true;

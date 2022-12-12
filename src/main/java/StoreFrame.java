@@ -176,6 +176,16 @@ public class StoreFrame extends JFrame implements StoreView {
         inventoryControlPanel.add(updateTracker);
         inventoryControlPanel.add(viewReport);
 
+        addBook.addActionListener(e -> {
+            JPanel panel = new JPanel(new GridLayout());
+            JTextField isbn = new JTextField(13);
+            JTextField name = new JTextField();
+            JTextField author = new JTextField();
+            JTextField genre = new JTextField();
+            JTextField publisher = new JTextField();
+            JTextField pages = new JTextField();
+        });
+
         JPanel databaseControlPanel = new JPanel();
         databaseControlPanel.setLayout(new BoxLayout(databaseControlPanel, BoxLayout.X_AXIS));
         JButton addNewAdmin = new JButton("Add New Admin");
@@ -197,6 +207,7 @@ public class StoreFrame extends JFrame implements StoreView {
         JPanel info = new JPanel(new GridLayout(3, 1));
         JRadioButton name = new JRadioButton("Book name");
         name.setActionCommand("book");
+        name.setSelected(true);
         JRadioButton author = new JRadioButton("Author name");
         author.setActionCommand("author");
         JRadioButton isbn = new JRadioButton("ISBN");
@@ -252,13 +263,13 @@ public class StoreFrame extends JFrame implements StoreView {
         });
 
         browsePanel.add(searchPanel);
-        browsePanel.add(getBookSearch(null, null, null));
+        browsePanel.add(getBookSearch("", buttonGroup.getSelection().getActionCommand(), new ArrayList<>()));
         browsePanel.updateUI();
     }
 
     private JPanel getBookSearch(String search, String criteria, ArrayList<Book.Genre> genres) {
         HashMap<Book, Integer> results;
-        if((search == null) && (criteria == null) && (genres == null))
+        if((search.equals("")) && (genres.isEmpty()))
             results = model.getInventory();
         else
             results = model.search(search, criteria, genres);
@@ -282,6 +293,8 @@ public class StoreFrame extends JFrame implements StoreView {
                 else
                     model.addToCurrentUserBasket(book, amount.getSelectedIndex());
             });
+
+            amount.setSize(new Dimension(50, 50));
 
             bookPanel.add(amount);
             JButton view = new JButton("View more information");
@@ -447,8 +460,9 @@ public class StoreFrame extends JFrame implements StoreView {
                 }
                 BillingInfo billingInfo = new BillingInfo(name.getText(), Long.parseLong(cardNum.getText()), Integer.parseInt(date.toString()), Integer.parseInt(cvv.getText()), billingAddress.getText(), billingPostalCode.getText(), billingCity.getText(), billingCountry.getText());
                 Order order = model.getCurrentUser().getBasket().checkOut(model.getNewOrderNumber(), totalPrice, billingInfo, (shippingAddress.getText() + ", \n" + shippingCity.getText() + ", " + shippingCountry.getText() + ", " + shippingPostalCode.getText()));
-                if(model.processOrder(order)) {
+                if(model.processOrder(order, billingInfo)) {
                     JOptionPane.showMessageDialog(this, "Order placed successfully!");
+                    updateBrowsePanel();
                     cardLayout.show(contentPanel, "Browse");
                 }
                 else

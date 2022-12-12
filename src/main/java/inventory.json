@@ -124,7 +124,7 @@
 			"price": 26.24,
 			"commission": 0.15,
 			"amount": 100,
-			"genres": "ACTION"
+			"genre": "ACTION"
 		},
 		{
 			"ISBN": 9780735245341,
@@ -135,7 +135,7 @@
 			"price": 21.60,
 			"commission": 0.10,
 			"amount": 100,
-			"genres": "FICTION"
+			"genre": "FICTION"
 		},
 		{
 			"ISBN": 9781400031702,
@@ -146,7 +146,7 @@
 			"price": 20.00,
 			"commission": 0.07,
 			"amount": 100,
-			"genres": "COMEDY"
+			"genre": "COMEDY"
 		},
 		{
 			"ISBN": 9781501110365,
@@ -157,7 +157,7 @@
 			"price": 22.99,
 			"commission": 0.8,
 			"amount": 100,
-			"genres": "ROMANCE"
+			"genre": "ROMANCE"
 		},
 		{
 			"ISBN": 9781501110364,
@@ -168,7 +168,7 @@
 			"price": 24.99,
 			"commission": 0.75,
 			"amount": 100,
-			"genres": "NON_FICTION"
+			"genre": "NON_FICTION"
 		},
 		{
 			"ISBN": 9781501110363,
@@ -179,7 +179,7 @@
 			"price": 20.37,
 			"commission": 0.55,
 			"amount": 100,
-			"genres": "NON_FICTION"
+			"genre": "NON_FICTION"
 		},
 		{
 			"ISBN": 9781501110362,
@@ -190,7 +190,7 @@
 			"price": 27.99,
 			"commission": 0.85,
 			"amount": 100,
-			"genres": "COMEDY"
+			"genre": "COMEDY"
 		},
 		{
 			"ISBN": 9781501110361,
@@ -201,7 +201,7 @@
 			"price": 21.99,
 			"commission": 0.75,
 			"amount": 100,
-			"genres": "MYSTERY"
+			"genre": "MYSTERY"
 		},
 		{
 			"ISBN": 9781501110368,
@@ -212,7 +212,7 @@
 			"price": 16.99,
 			"commission": 0.7,
 			"amount": 100,
-			"genres": "ACTION"
+			"genre": "ACTION"
 		},
 		{
 			"ISBN": 9781501110350,
@@ -223,7 +223,7 @@
 			"price": 3.25,
 			"commission": 0.45,
 			"amount": 100,
-			"genres": "EDUCATIONAL"
+			"genre": "EDUCATIONAL"
 		},
 		{
 			"ISBN": 9781501110340,
@@ -234,7 +234,7 @@
 			"price": 14.99,
 			"commission": 0.75,
 			"amount": 100,
-			"genres": "SCI_FI"
+			"genre": "SCI_FI"
 		},
 		{
 			"ISBN": 9781501110330,
@@ -245,7 +245,7 @@
 			"price": 19.95,
 			"commission": 0.65,
 			"amount": 100,
-			"genres": "SELFHELP"
+			"genre": "SELFHELP"
 		},
 		{
 			"ISBN": 9781501110320,
@@ -256,7 +256,7 @@
 			"price": 9.99,
 			"commission": 0.75,
 			"amount": 100,
-			"genres": "CHILDREN"
+			"genre": "CHILDREN"
 		},
 		{
 			"ISBN": 9781501110310,
@@ -267,7 +267,7 @@
 			"price": 18.99,
 			"commission": 0.6,
 			"amount": 100,
-			"genres": "ADVENTURE"
+			"genre": "ADVENTURE"
 		},
 		{
 			"ISBN": 9781501110300,
@@ -278,7 +278,7 @@
 			"price": 11.87,
 			"commission": 0.5,
 			"amount": 100,
-			"genres": "CRIME"
+			"genre": "CRIME"
 		},
 		{
 			"ISBN": 9781501110200,
@@ -289,7 +289,7 @@
 			"price": 47.00,
 			"commission": 0.5,
 			"amount": 100,
-			"genres": "HORROR"
+			"genre": "HORROR"
 		},
 		{
 			"ISBN": 9781501110100,
@@ -300,7 +300,7 @@
 			"price": 16.99,
 			"commission": 0.8,
 			"amount": 100,
-			"genres": "YOUNG_ADULT"
+			"genre": "YOUNG_ADULT"
 		},
 		{
 			"ISBN": 9781501110000,
@@ -311,7 +311,7 @@
 			"price": 14.99,
 			"commission": 0.9,
 			"amount": 100,
-			"genres": "ROMANCE"
+			"genre": "ROMANCE"
 		},
 		{
 			"ISBN": 9781501190000,
@@ -322,7 +322,7 @@
 			"price": 56.00,
 			"commission": 0.85,
 			"amount": 100,
-			"genres": "COOKBOOK"
+			"genre": "COOKBOOK"
 		},
 		{
 			"ISBN": 9781501180000,
@@ -333,7 +333,7 @@
 			"price": 14.84,
 			"commission": 0.95,
 			"amount": 100,
-			"genres": "COMICS"
+			"genre": "COMICS"
 		}
 	]
 }

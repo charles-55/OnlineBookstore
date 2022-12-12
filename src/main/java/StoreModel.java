@@ -218,12 +218,12 @@ public class StoreModel {
                 try {
                     StringBuilder query;
                     if (genres.isEmpty())
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '" + search + "'");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '\"" + search + "\"'");
                     else {
-                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.Bname = '" + search + "' AND g.Gname IN ('UNKNOWN', '");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '\"" + search + "\"' AND Genre IN ('\"UNKNOWN\"', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append(genres.get(i).toString()).append("', '");
-                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
                     while (resultSet.next()) {
@@ -243,12 +243,12 @@ public class StoreModel {
                 try {
                     StringBuilder query;
                     if (genres.isEmpty())
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '" + search + "'");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '\"" + search + "\"'");
                     else {
-                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.AuthorName = '" + search + "' AND g.Gname IN ('UNKNOWN', '");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '\"" + search + "\"' AND Genre IN ('UNKNOWN', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append(genres.get(i).toString()).append("', '");
-                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
                     while (resultSet.next()) {
@@ -270,10 +270,10 @@ public class StoreModel {
                     if (genres.isEmpty())
                         query = new StringBuilder("SELECT ISBN FROM Book WHERE ISBN = " + search + "");
                     else {
-                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.ISBN = " + search + " AND g.Gname IN ('UNKNOWN', '");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE ISBN = " + search + " AND Genre IN ('UNKNOWN', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append(genres.get(i).toString()).append("', '");
-                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
                     while (resultSet.next()) {
@@ -308,9 +308,23 @@ public class StoreModel {
         return newTrackingNumber - 1;
     }
 
-    public boolean processOrder(Order order) {
-        for (String s : order.getSQLStringRepresentation()) {
+    public boolean addBillingInfo(BillingInfo billingInfo) {
+        return (CONNECTION_MANAGER.execute("INSERT INTO BillingInfo VALUES (" + billingInfo.getSQLRepresentation() + ");"));
+    }
+
+    public boolean processOrder(Order order, BillingInfo billingInfo) {
+        if(!addBillingInfo(billingInfo))
+            return false;
+
+        for(String s : order.getSQLStringRepresentation()) {
             if (!CONNECTION_MANAGER.execute("INSERT INTO BookOrder VALUES (" + s + ");")) {
+                currentUser.getBasket().undoCheckOut(order);
+                return false;
+            }
+        }
+        for(Book book : order.getBasket().keySet()) {
+            if(!CONNECTION_MANAGER.execute("DELETE FROM Basket WHERE ISBN = " + book.getISBN() + ";")) {
+                CONNECTION_MANAGER.execute("DELETE FROM BookOrder WHERE ISBN = " + book.getISBN() + ";");
                 currentUser.getBasket().undoCheckOut(order);
                 return false;
             }

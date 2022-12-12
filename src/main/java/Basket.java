@@ -40,7 +40,7 @@ public class Basket {
     public Order checkOut(int orderNum, double totalPrice, BillingInfo billingInfo, String shippingInfo) {
         for(Book book : cart.keySet())
             book.getPublisher().addProfit(book.getPrice() * book.getPubPercent() * cart.get(book));
-        Order order = new Order(orderNum, userID, cart, totalPrice, billingInfo, shippingInfo);
+        Order order = new Order(orderNum, userID, new HashMap<>(cart), totalPrice, billingInfo, shippingInfo);
         cart.clear();
         return order;
     }

@@ -77,8 +77,8 @@ CREATE TABLE Tracker (
 );
 
 CREATE TABLE MonthlySummaryReport (
-    MonthOfSale     Month NOT NULL,
-    YearOfSale      YEAR NOT NULL,
+    MonthOfSale     VARCHAR(10) NOT NULL,
+    YearOfSale      NUMERIC(4, 0) NOT NULL,
     Revenue         NUMERIC(10, 2) NOT NULL,
     Expenditures    NUMERIC(10, 2) NOT NULL,
     SalesPerGenre   NUMERIC(10, 2) NOT NULL,
@@ -87,8 +87,8 @@ CREATE TABLE MonthlySummaryReport (
 );
 
 CREATE TABLE MonthlyBookSales (
-    MonthOfSale     Month NOT NULL,
-    YearOfSale      YEAR NOT NULL,
+    MonthOfSale     VARCHAR(10) NOT NULL,
+    YearOfSale      NUMERIC(4, 0) NOT NULL,
     ISBN            NUMERIC(13, 0) NOT NULL,
     Amount          INT NOT NULL,
     PRIMARY KEY (MonthOfSale, YearOfSale, ISBN),

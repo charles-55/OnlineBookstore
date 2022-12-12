@@ -328,6 +328,14 @@ public class StoreModel {
     }
 
     public boolean addBillingInfo(BillingInfo billingInfo) {
+        try {
+            ResultSet resultSet = CONNECTION_MANAGER.executeQuery("SELECT CardNum FROM BillingInfo WHERE CardNum = " + billingInfo.getCardNumber());
+            if (resultSet.next())
+                return true;
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return (CONNECTION_MANAGER.execute("INSERT INTO BillingInfo VALUES (" + billingInfo.getSQLRepresentation() + ");"));
     }
 

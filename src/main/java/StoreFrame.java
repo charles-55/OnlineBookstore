@@ -190,6 +190,8 @@ public class StoreFrame extends JFrame implements StoreView {
         databaseControlPanel.setLayout(new BoxLayout(databaseControlPanel, BoxLayout.X_AXIS));
         JButton addNewAdmin = new JButton("Add New Admin");
         JButton wipeDatabase = new JButton("Wipe Database");
+        databaseControlPanel.add(addNewAdmin);
+        databaseControlPanel.add(wipeDatabase);
 
         adminPanel.add(getCentreAlignedJLabel("Inventory Controls"));
         adminPanel.add(inventoryControlPanel);
@@ -579,8 +581,8 @@ public class StoreFrame extends JFrame implements StoreView {
         JPanel adminOrUser = new JPanel(new BorderLayout());
         adminOrUser.add(getCentreAlignedJLabel("Sign in as admin or user:"), BorderLayout.NORTH);
 
-        JButton admin = new JButton("Sign in");
-        JButton user = new JButton("Sign up");
+        JButton admin = new JButton("Admin");
+        JButton user = new JButton("User");
         adminOrUser.add(admin, BorderLayout.WEST);
         adminOrUser.add(user, BorderLayout.EAST);
 
@@ -650,7 +652,7 @@ public class StoreFrame extends JFrame implements StoreView {
             return false;
         }
 
-        boolean b = model.addUser(username.getText(), password.getText()) && model.signIn(username.getText(), password.getText(), false);
+        boolean b = model.addUser(username.getText(), password.getText(), false) && model.signIn(username.getText(), password.getText(), false);
         if(b)
             JOptionPane.showMessageDialog(this, "Sign up successful!");
         else

@@ -1,6 +1,8 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class StoreModel {
@@ -14,6 +16,7 @@ public class StoreModel {
     private int newOrderNumber;
     private int newTrackingNumber;
     private final ConnectionManager CONNECTION_MANAGER;
+    private String CONSOLE;
 
     public StoreModel() {
         users = new ArrayList<>();
@@ -24,6 +27,7 @@ public class StoreModel {
         newOrderNumber = 1;
         newTrackingNumber = 1;
         CONNECTION_MANAGER = new ConnectionManager(this);
+        CONSOLE = "";
         initialize();
     }
 
@@ -32,6 +36,10 @@ public class StoreModel {
             for(StoreView view : views)
                 view.handleMessage("Inventory failed to initialize!");
         }
+    }
+
+    public void updateConsole(String s) {
+        CONSOLE += s + "\n";
     }
 
     public ArrayList<User> getUsers() {
@@ -54,18 +62,13 @@ public class StoreModel {
         return CONNECTION_MANAGER;
     }
 
-    public boolean addUser(String username, String password) {
-        User user = new User(users.size() + 1, username, password);
+    public boolean addUser(String username, String password, boolean isAdmin) {
+        User user;
+        if(isAdmin)
+            user = new Admin(users.size() + 1, username, password);
+        else
+            user = new User(users.size() + 1, username, password);
         if(CONNECTION_MANAGER.execute("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
-            users.add(user);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean addAdminUser(String username, String password) {
-        User user = new Admin(users.size() + 1, username, password);
-        if(CONNECTION_MANAGER.execute("INSERT INTO Admin VALUES (" + user.getSQLStringRepresentation() + ");")) {
             users.add(user);
             return true;
         }
@@ -145,7 +148,23 @@ public class StoreModel {
 
     private void autoPlaceBookOrder(Book book) {
         /* email publishers */
-
+        int newAmount = 100;
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MONTH, -1);
+            if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER)
+                calendar.add(Calendar.YEAR, -1);
+            else
+                calendar.add(Calendar.YEAR, 0);
+            ResultSet resultSet = CONNECTION_MANAGER.executeQuery("SELECT Amount FROM MonthlyBookSales WHERE MonthOfSale = " + calendar.get(Calendar.MONTH) + " AND YearOfSale = " + calendar.get(Calendar.YEAR) + " ISBN = " + book.getISBN() + ";");
+            if(resultSet.next())
+                newAmount = resultSet.getInt("Amount");
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(!addToInventory(book, newAmount))
+            updateConsole("Running short on book " + book.getISBN() + ". Could not automatically place order!");
     }
 
     public void addView(StoreView view) {
@@ -156,13 +175,13 @@ public class StoreModel {
         return currentUser;
     }
 
-    public boolean addToCurrentUserBasket(Book book, int amount) {
+    public void addToCurrentUserBasket(Book book, int amount) {
         if(currentUser.getBasket().getCart().get(book) == null) {
             if(currentUser.getBasket().addBook(book, amount)) {
                 if(CONNECTION_MANAGER.execute("INSERT INTO Basket VALUES (" + currentUser.getID() + ", " + book.getISBN() + ", " + amount + ");")) {
                     for(StoreView view : views)
                         view.handleMessage("Added to basket.");
-                    return true;
+                    return;
                 }
                 else
                     currentUser.getBasket().removeBook(book, amount);
@@ -173,7 +192,7 @@ public class StoreModel {
                 if(CONNECTION_MANAGER.execute("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
                     for(StoreView view : views)
                         view.handleMessage("Added to basket.");
-                    return true;
+                    return;
                 }
                 else
                     currentUser.getBasket().removeBook(book, amount);
@@ -181,7 +200,6 @@ public class StoreModel {
         }
         for(StoreView view : views)
             view.handleMessage("Failed to add to basket.");
-        return false;
     }
 
     public boolean removeFromCurrentUserBasket(Book book, int amount) {
@@ -212,17 +230,18 @@ public class StoreModel {
 
     public HashMap<Book, Integer> search(String search, String criteria, ArrayList<Book.Genre> genres) {
         HashMap<Book, Integer> result = new HashMap<>();
+        search = search.toUpperCase();
 
         switch (criteria) {
             case "book":
                 try {
                     StringBuilder query;
                     if (genres.isEmpty())
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '\"" + search + "\"'");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '" + search + "'");
                     else {
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '\"" + search + "\"' AND Genre IN ('\"UNKNOWN\"', '");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '" + search + "' AND Genre IN ('UNKNOWN', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                            query.append(genres.get(i).toString()).append("', '");
                         query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
@@ -243,11 +262,11 @@ public class StoreModel {
                 try {
                     StringBuilder query;
                     if (genres.isEmpty())
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '\"" + search + "\"'");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '" + search + "'");
                     else {
-                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '\"" + search + "\"' AND Genre IN ('UNKNOWN', '");
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '" + search + "' AND Genre IN ('UNKNOWN', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                            query.append(genres.get(i).toString()).append("', '");
                         query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
@@ -272,7 +291,7 @@ public class StoreModel {
                     else {
                         query = new StringBuilder("SELECT ISBN FROM Book WHERE ISBN = " + search + " AND Genre IN ('UNKNOWN', '");
                         for (int i = 0; i < genres.size() - 1; i++)
-                            query.append("\"").append(genres.get(i).toString()).append("\"', '");
+                            query.append(genres.get(i).toString()).append("', '");
                         query.append(genres.get(genres.size() - 1).toString()).append("');");
                     }
                     ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
@@ -363,6 +382,10 @@ public class StoreModel {
     public boolean signIn(String username, String password, boolean isAdmin) {
         try {
             String query = "SELECT CustomerID FROM Customer WHERE Username = '" + username + "' AND Pword = '" + password + "'";
+            if(isAdmin)
+                query += " AND Admin = 'YES'";
+            else
+                query += " AND Admin = 'NO'";
             ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query);
             resultSet.next();
             int userID = resultSet.getInt("CustomerID");

@@ -7,4 +7,3 @@ DROP TABLE Basket;
 DROP TABLE Book;
 DROP TABLE Publisher;
 DROP TABLE Customer;
-DROP TABLE Admin;

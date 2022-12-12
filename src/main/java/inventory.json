@@ -1,4 +1,15 @@
 {
+	"admins": [
+		{
+			"username": "charles",
+			"password": "055846"
+		},
+		{
+			"username": "oyinda",
+			"password": "775123"
+		}
+	],
+
 	"publishers": [
 		{
 			"name": "HarperCollins",

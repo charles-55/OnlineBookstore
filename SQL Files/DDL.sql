@@ -1,14 +1,8 @@
-CREATE TABLE Admin (
-	AdminID	    INT NOT NULL,
-	Username	VARCHAR(25) UNIQUE NOT NULL,
-	Pword		VARCHAR(16) NOT NULL,
-	PRIMARY KEY (AdminID)
-);
-
 CREATE TABLE Customer (
 	CustomerID	INT NOT NULL,
 	Username	VARCHAR(25) UNIQUE NOT NULL,
 	Pword		VARCHAR(16) NOT NULL,
+	Admin       VARCHAR(3) NOT NULL,
 	PRIMARY KEY (CustomerID)
 );
 
@@ -77,7 +71,7 @@ CREATE TABLE Tracker (
 );
 
 CREATE TABLE MonthlySummaryReport (
-    MonthOfSale     VARCHAR(10) NOT NULL,
+    MonthOfSale     INT NOT NULL,
     YearOfSale      NUMERIC(4, 0) NOT NULL,
     Revenue         NUMERIC(10, 2) NOT NULL,
     Expenditures    NUMERIC(10, 2) NOT NULL,
@@ -87,7 +81,7 @@ CREATE TABLE MonthlySummaryReport (
 );
 
 CREATE TABLE MonthlyBookSales (
-    MonthOfSale     VARCHAR(10) NOT NULL,
+    MonthOfSale     INT NOT NULL,
     YearOfSale      NUMERIC(4, 0) NOT NULL,
     ISBN            NUMERIC(13, 0) NOT NULL,
     Amount          INT NOT NULL,

@@ -68,6 +68,6 @@ public class User {
     }
 
     public String getSQLStringRepresentation() {
-        return ID + ", '" + username + "', '" + password + "'";
+        return ID + ", '" + username + "', '" + password + "', '" + (IS_ADMIN ? "YES" : "NO") + "'";
     }
 }

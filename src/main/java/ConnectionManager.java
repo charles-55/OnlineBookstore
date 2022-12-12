@@ -7,10 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class ConnectionManager {
@@ -65,7 +62,7 @@ public class ConnectionManager {
     }
 
     public boolean initializeDatabase() {
-        if(executeQuery(readFile(DDL))) {
+        if(execute(readFile(DDL))) {
             try {
                 JsonReader reader = Json.createReader(new FileReader(INVENTORY_FILE));
                 JsonObject starterObject = reader.readObject();
@@ -82,7 +79,14 @@ public class ConnectionManager {
                     JsonObject jsonObject = (JsonObject) object;
                     for(Publisher publisher : model.getPublishers()) {
                         if(publisher.getName().equals(jsonObject.get("publisher").toString())) {
-                            Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
+                            Book.Genre genre = Book.Genre.UNKNOWN;
+                            for(Book.Genre g : Book.Genre.values()) {
+                                if(g.toString().equals(jsonObject.get("genre").toString())) {
+                                    genre = g;
+                                    break;
+                                }
+                            }
+                            Book book = new Book(Long.parseLong(jsonObject.get("ISBN").toString()), jsonObject.get("name").toString(), jsonObject.get("author").toString(), publisher, genre, Integer.parseInt(jsonObject.get("pages").toString()), Double.parseDouble(jsonObject.get("price").toString()), Double.parseDouble(jsonObject.get("commission").toString()));
                             model.addToInventory(book, Integer.parseInt(jsonObject.get("amount").toString()));
                         }
                     }
@@ -97,10 +101,10 @@ public class ConnectionManager {
     }
 
     public boolean cleanDatabase() {
-        return executeQuery(readFile(DROP_TABLES));
+        return execute(readFile(DROP_TABLES));
     }
 
-    public boolean executeQuery(String query) {
+    public boolean execute(String query) {
         try {
             statement.execute(query);
             return true;
@@ -110,13 +114,20 @@ public class ConnectionManager {
         }
     }
 
+    public ResultSet executeQuery(String query) {
+        try {
+            return statement.executeQuery(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public boolean disconnect() {
         try {
-            if(cleanDatabase()) {
-                statement.close();
-                connection.close();
-                return true;
-            }
+            statement.close();
+            connection.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }

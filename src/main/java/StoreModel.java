@@ -1,3 +1,5 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,7 +56,16 @@ public class StoreModel {
 
     public boolean addUser(String username, String password) {
         User user = new User(users.size() + 1, username, password);
-        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
+        if(CONNECTION_MANAGER.execute("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
+            users.add(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addAdminUser(String username, String password) {
+        User user = new Admin(users.size() + 1, username, password);
+        if(CONNECTION_MANAGER.execute("INSERT INTO Admin VALUES (" + user.getSQLStringRepresentation() + ");")) {
             users.add(user);
             return true;
         }
@@ -62,7 +73,7 @@ public class StoreModel {
     }
 
     public boolean addTracker(Tracker tracker) {
-        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {
+        if(CONNECTION_MANAGER.execute("INSERT INTO Tracker VALUES (" + tracker.getSQLStringRepresentation() + ");")) {
             trackers.add(tracker);
             return true;
         }
@@ -70,7 +81,7 @@ public class StoreModel {
     }
 
     public boolean removeTracker(Tracker tracker) {
-        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Tracker WHERE TrackerNum = " + tracker.getTrackingNumber() + ";")) {
+        if(CONNECTION_MANAGER.execute("DELETE FROM Tracker WHERE TrackerNum = " + tracker.getTrackingNumber() + ";")) {
             trackers.remove(tracker);
             return true;
         }
@@ -78,7 +89,7 @@ public class StoreModel {
     }
 
     public boolean addPublisher(Publisher publisher) {
-        if(CONNECTION_MANAGER.executeQuery("INSERT INTO Publisher VALUES (" + publisher.getSQLStringRepresentation() + ");")) {
+        if(CONNECTION_MANAGER.execute("INSERT INTO Publisher VALUES (" + publisher.getSQLStringRepresentation() + ");")) {
             publishers.add(publisher);
             return true;
         }
@@ -86,7 +97,7 @@ public class StoreModel {
     }
 
     public boolean removePublisher(Publisher publisher) {
-        if(CONNECTION_MANAGER.executeQuery("DELETE FROM Publisher WHERE Pname = " + publisher.getName() + ";")) {
+        if(CONNECTION_MANAGER.execute("DELETE FROM Publisher WHERE Pname = " + publisher.getName() + ";")) {
             publishers.remove(publisher);
             return true;
         }
@@ -95,14 +106,14 @@ public class StoreModel {
 
     public boolean addToInventory(Book book, int amount) {
         if(inventory.get(book) == null) {
-            if(CONNECTION_MANAGER.executeQuery("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
+            if(CONNECTION_MANAGER.execute("INSERT INTO Book VALUES (" + book.getSQLStringRepresentation() + ", " + amount  + ");")) {
                 inventory.put(book, amount);
                 return true;
             }
         }
         else {
             int newAmount = inventory.get(book) + amount;
-            if(CONNECTION_MANAGER.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.execute("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.put(book, newAmount);
                 return true;
             }
@@ -114,19 +125,27 @@ public class StoreModel {
         if(!inventory.containsKey(book))
             return false;
         if(inventory.get(book) == amount) {
-            if(CONNECTION_MANAGER.executeQuery("DELETE FROM Book WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.execute("DELETE FROM Book WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.remove(book);
+                autoPlaceBookOrder(book);
                 return true;
             }
         }
         else if(inventory.get(book) > amount) {
             int newAmount = inventory.get(book) - amount;
-            if(CONNECTION_MANAGER.executeQuery("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
+            if(CONNECTION_MANAGER.execute("UPDATE Book SET Amount = " + newAmount  + " WHERE ISBN = " + book.getISBN() + ";")) {
                 inventory.put(book, newAmount);
+                if(inventory.get(book) < 10)
+                    autoPlaceBookOrder(book);
                 return true;
             }
         }
         return false;
+    }
+
+    private void autoPlaceBookOrder(Book book) {
+        /* email publishers */
+
     }
 
     public void addView(StoreView view) {
@@ -140,7 +159,7 @@ public class StoreModel {
     public boolean addToCurrentUserBasket(Book book, int amount) {
         if(currentUser.getBasket().getCart().get(book) == null) {
             if(currentUser.getBasket().addBook(book, amount)) {
-                if(CONNECTION_MANAGER.executeQuery("INSERT INTO Basket VALUES (" + currentUser.getUserID() + ", " + book.getISBN() + ", " + amount + ");")) {
+                if(CONNECTION_MANAGER.execute("INSERT INTO Basket VALUES (" + currentUser.getID() + ", " + book.getISBN() + ", " + amount + ");")) {
                     for(StoreView view : views)
                         view.handleMessage("Added to basket.");
                     return true;
@@ -151,7 +170,7 @@ public class StoreModel {
         }
         else {
             if(currentUser.getBasket().addBook(book, amount)) {
-                if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
+                if(CONNECTION_MANAGER.execute("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
                     for(StoreView view : views)
                         view.handleMessage("Added to basket.");
                     return true;
@@ -168,7 +187,7 @@ public class StoreModel {
     public boolean removeFromCurrentUserBasket(Book book, int amount) {
         if(currentUser.getBasket().getCart().get(book) == amount) {
             if(currentUser.getBasket().removeBook(book, amount)) {
-                if(CONNECTION_MANAGER.executeQuery("DELETE FROM Basket WHERE ISBN = " + book.getISBN() +";")) {
+                if(CONNECTION_MANAGER.execute("DELETE FROM Basket WHERE ISBN = " + book.getISBN() +";")) {
                     for(StoreView view : views)
                         view.handleMessage("Removed from basket.");
                     return true;
@@ -178,7 +197,7 @@ public class StoreModel {
             }
         }
         if(currentUser.getBasket().removeBook(book, amount)) {
-            if(CONNECTION_MANAGER.executeQuery("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
+            if(CONNECTION_MANAGER.execute("UPDATE Basket SET Amount = " + amount + " WHERE ISBN = " + book.getISBN() +";")) {
                 for(StoreView view : views)
                     view.handleMessage("Removed from basket.");
                 return true;
@@ -193,51 +212,90 @@ public class StoreModel {
 
     public HashMap<Book, Integer> search(String search, String criteria, ArrayList<Book.Genre> genres) {
         HashMap<Book, Integer> result = new HashMap<>();
-        ArrayList<Book> tempResult = new ArrayList<>();
 
         switch (criteria) {
             case "book":
-                for (Book book : inventory.keySet()) {
-                    if (search.equals(book.getBookName()))
-                        tempResult.add(book);
+                try {
+                    StringBuilder query;
+                    if (genres.isEmpty())
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE Bname = '" + search + "'");
+                    else {
+                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.Bname = '" + search + "' AND g.Gname IN ('UNKNOWN', '");
+                        for (int i = 0; i < genres.size() - 1; i++)
+                            query.append(genres.get(i).toString()).append("', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                    }
+                    ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
+                    while (resultSet.next()) {
+                        long isbn = resultSet.getLong("ISBN");
+                        for(Book book : inventory.keySet()) {
+                            if(book.getISBN() == isbn)
+                                result.put(book, inventory.get(book));
+                        }
+                    }
+                    resultSet.close();
+                    return result;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 break;
             case "author":
-                for (Book book : inventory.keySet()) {
-                    if (search.equals(book.getAuthorName()))
-                        tempResult.add(book);
+                try {
+                    StringBuilder query;
+                    if (genres.isEmpty())
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE AuthorName = '" + search + "'");
+                    else {
+                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.AuthorName = '" + search + "' AND g.Gname IN ('UNKNOWN', '");
+                        for (int i = 0; i < genres.size() - 1; i++)
+                            query.append(genres.get(i).toString()).append("', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                    }
+                    ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
+                    while (resultSet.next()) {
+                        long isbn = resultSet.getLong("ISBN");
+                        for(Book book : inventory.keySet()) {
+                            if(book.getISBN() == isbn)
+                                result.put(book, inventory.get(book));
+                        }
+                    }
+                    resultSet.close();
+                    return result;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 break;
             case "isbn":
-                for (Book book : inventory.keySet()) {
-                    if (Long.parseLong(search) == book.getISBN())
-                        tempResult.add(book);
+                try {
+                    StringBuilder query;
+                    if (genres.isEmpty())
+                        query = new StringBuilder("SELECT ISBN FROM Book WHERE ISBN = " + search + "");
+                    else {
+                        query = new StringBuilder("SELECT ISBN FROM Book b, Genre g WHERE b.ISBN = " + search + " AND g.Gname IN ('UNKNOWN', '");
+                        for (int i = 0; i < genres.size() - 1; i++)
+                            query.append(genres.get(i).toString()).append("', '");
+                        query.append(genres.get(genres.size() - 1).toString()).append("') AND g.ISBN = b.ISBN;");
+                    }
+                    ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query.toString());
+                    while (resultSet.next()) {
+                        long isbn = resultSet.getLong("ISBN");
+                        for(Book book : inventory.keySet()) {
+                            if(book.getISBN() == isbn)
+                                result.put(book, inventory.get(book));
+                        }
+                    }
+                    resultSet.close();
+                    return result;
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 break;
-        }
-
-        if(tempResult.isEmpty()) {
-            for(StoreView view : views)
-                view.handleMessage("Search not found. Showing all books.");
-            return inventory;
-        }
-
-        for(Book book : tempResult) {
-            for(Book.Genre genre : genres) {
-                if(book.getGenres().contains(genre))
-                    result.put(book, inventory.get(book));
-            }
         }
 
         if(result.isEmpty()) {
             for(StoreView view : views)
-                view.handleMessage("Search not found. Showing similar results.");
-            for(Book book : tempResult)
-                result.put(book, inventory.get(book));
-            return result;
+                view.handleMessage("Search not found. Showing all books.");
         }
-
-        return result;
+        return inventory;
     }
 
     public int getNewOrderNumber() {
@@ -252,7 +310,7 @@ public class StoreModel {
 
     public boolean processOrder(Order order) {
         for (String s : order.getSQLStringRepresentation()) {
-            if (!CONNECTION_MANAGER.executeQuery("INSERT INTO BookOrder VALUES (" + s + ");")) {
+            if (!CONNECTION_MANAGER.execute("INSERT INTO BookOrder VALUES (" + s + ");")) {
                 currentUser.getBasket().undoCheckOut(order);
                 return false;
             }
@@ -276,16 +334,34 @@ public class StoreModel {
         return "Order not found.";
     }
 
-    public void updateOrderStatus(Tracker tracker, Tracker.Status status) {
-        tracker.setStatus(status);
+    public boolean updateOrderStatus(int trackingNumber, Tracker.Status status) {
+        if(CONNECTION_MANAGER.execute("UPDATE Tracker SET Status = '" + status.toString() + "' WHERE TrackerNum = " + trackingNumber + ";")) {
+            for(Tracker tracker : trackers) {
+                if(tracker.getTrackingNumber() == trackingNumber) {
+                    tracker.setStatus(status);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public boolean signIn(String username, String password) {
-        for(User user : users) {
-            if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                currentUser = user;
-                return true;
+    public boolean signIn(String username, String password, boolean isAdmin) {
+        try {
+            String query = "SELECT CustomerID FROM Customer WHERE Username = '" + username + "' AND Pword = '" + password + "'";
+            ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query);
+            resultSet.next();
+            int userID = resultSet.getInt("CustomerID");
+            for (User user : users) {
+                if(user.getID() == userID) {
+                    currentUser = user;
+                    resultSet.close();
+                    return true;
+                }
             }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -296,7 +372,7 @@ public class StoreModel {
 
     public boolean changeCurrentUserPassword(String oldPassword, String newPassword) {
         if(currentUser.changePassword(oldPassword, newPassword)) {
-            if(CONNECTION_MANAGER.executeQuery("UPDATE Customer SET Pword = '" + newPassword  + "' WHERE CustomerID = " + currentUser.getUserID() + ";")) {
+            if(CONNECTION_MANAGER.execute("UPDATE Customer SET Pword = '" + newPassword  + "' WHERE CustomerID = " + currentUser.getID() + ";")) {
                 return true;
             }
             currentUser.changePassword(newPassword, oldPassword);
@@ -307,7 +383,7 @@ public class StoreModel {
     public boolean updateTrackerStatus(int trackingNumber, Tracker.Status status) {
         for(Tracker tracker : trackers) {
             if(tracker.getTrackingNumber() == trackingNumber) {
-                if(CONNECTION_MANAGER.executeQuery("UPDATE Tracker SET Status = " + status.toString()  + " WHERE TrackerNum = " + trackingNumber + ";")) {
+                if(CONNECTION_MANAGER.execute("UPDATE Tracker SET Status = " + status.toString()  + " WHERE TrackerNum = " + trackingNumber + ";")) {
                     tracker.setStatus(status);
                     return true;
                 }

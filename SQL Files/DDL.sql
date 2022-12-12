@@ -1,3 +1,10 @@
+CREATE TABLE Admin (
+	AdminID	    INT NOT NULL,
+	Username	VARCHAR(25) UNIQUE NOT NULL,
+	Pword		VARCHAR(16) NOT NULL,
+	PRIMARY KEY (AdminID)
+);
+
 CREATE TABLE Customer (
 	CustomerID	INT NOT NULL,
 	Username	VARCHAR(25) UNIQUE NOT NULL,
@@ -20,19 +27,13 @@ CREATE TABLE Book (
 	AuthorName			VARCHAR(100) NOT NULL,
 	ContributingAuthor	VARCHAR(100),
 	Publisher			VARCHAR(100) NOT NULL,
+	Genre               VARCHAR(15) NOT NULL,
 	NumOfPages			INT NOT NULL,
 	Price				NUMERIC(5, 2) NOT NULL,
 	PubPercent			NUMERIC(3, 2),
 	Amount				INT NOT NULL,
 	PRIMARY KEY (ISBN),
 	FOREIGN KEY (Publisher) REFERENCES Publisher (Pname)
-);
-
-CREATE TABLE Genre (
-	Gname	VARCHAR(15) NOT NULL,
-	ISBN	NUMERIC(13, 0) NOT NULL,
-	PRIMARY KEY (Gname),
-	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
 );
 
 CREATE TABLE Basket (
@@ -73,4 +74,23 @@ CREATE TABLE Tracker (
 	PRIMARY KEY (TrackerNum),
 	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
 	FOREIGN KEY (OrderNum) REFERENCES BookOrder (OrderNum)
+);
+
+CREATE TABLE MonthlySummaryReport (
+    MonthOfSale     Month NOT NULL,
+    YearOfSale      YEAR NOT NULL,
+    Revenue         NUMERIC(10, 2) NOT NULL,
+    Expenditures    NUMERIC(10, 2) NOT NULL,
+    SalesPerGenre   NUMERIC(10, 2) NOT NULL,
+    SalesPerAuthor  NUMERIC(10, 2) NOT NULL,
+    PRIMARY KEY(MonthOfSale, YearOfSale)
+);
+
+CREATE TABLE MonthlyBookSales (
+    MonthOfSale     Month NOT NULL,
+    YearOfSale      YEAR NOT NULL,
+    ISBN            NUMERIC(13, 0) NOT NULL,
+    Amount          INT NOT NULL,
+    PRIMARY KEY (MonthOfSale, YearOfSale, ISBN),
+    FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
 );

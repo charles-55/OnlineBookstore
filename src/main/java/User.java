@@ -2,22 +2,33 @@ import java.util.ArrayList;
 
 public class User {
 
-    private final int userID;
+    private final int ID;
     private String username;
     private String password;
     private final Basket basket;
     private final ArrayList<Order> orderHistory;
+    private final boolean IS_ADMIN;
 
-    public User(int userID, String username, String password) {
-        this.userID = userID;
+    public User(int ID, String username, String password) {
+        this.ID = ID;
         this.username = username;
         this.password = password;
-        this.basket = new Basket(userID);
+        basket = new Basket(ID);
         orderHistory = new ArrayList<>();
+        IS_ADMIN = false;
     }
 
-    public int getUserID(){
-        return userID;
+    public User(int ID, String username, String password, boolean IS_ADMIN) {
+        this.ID = ID;
+        this.username = username;
+        this.password = password;
+        basket = new Basket(ID);
+        orderHistory = new ArrayList<>();
+        this.IS_ADMIN = IS_ADMIN;
+    }
+
+    public int getID(){
+        return ID;
     }
 
     public String getUsername(){
@@ -34,6 +45,10 @@ public class User {
 
     public ArrayList<Order> getOrderHistory() {
         return orderHistory;
+    }
+
+    public boolean isAdmin() {
+        return IS_ADMIN;
     }
 
     public void setUsername(String username){
@@ -53,6 +68,6 @@ public class User {
     }
 
     public String getSQLStringRepresentation() {
-        return userID + ", '" + username + "', '" + password + "'";
+        return ID + ", '" + username + "', '" + password + "'";
     }
 }

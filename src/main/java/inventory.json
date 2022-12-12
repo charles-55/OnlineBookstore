@@ -26,13 +26,14 @@
 	"books": [
 		{
 			"ISBN": 9780063282056,
-			"name": "Babel Indigo Special Edition: A Novel",
+			"name": "BABEL INDIGO SPECIAL EDITION: A NOVEL",
 			"author": "R. F Kuang",
 			"publisher": "HarperCollins",
 			"pages": 560,
 			"price": 26.24,
 			"commission": 0.15,
-			"amount": 100
+			"amount": 100,
+			"genres": "ACTION"
 		},
 		{
 			"ISBN": 9780735245341,
@@ -42,7 +43,8 @@
 			"pages": 352,
 			"price": 21.60,
 			"commission": 0.10,
-			"amount": 100
+			"amount": 100,
+			"genres": "FICTION"
 		},
 		{
 			"ISBN": 9781400031702,
@@ -53,7 +55,194 @@
 			"price": 20.00,
 			"commission": 0.07,
 			"amount": 100,
-			"genres": "C"
+			"genres": "COMEDY"
+		},
+		{
+			"ISBN": 9781501110365,
+			"name": "IT ENDS WITH US",
+			"author": "Colleen Hoover",
+			"publisher": "Atria Books",
+			"pages": 384,
+			"price": 22.99,
+			"commission": 0.8,
+			"amount": 100,
+			"genres": "ROMANCE"
+		},
+		{
+			"ISBN": 9781501110364,
+			"name": "ASHES IN THE SNOW",
+			"author": "Oriana Ramunno",
+			"publisher": "HarperCollins",
+			"pages": 336,
+			"price": 24.99,
+			"commission": 0.75,
+			"amount": 100,
+			"genres": "NON_FICTION"
+		},
+		{
+			"ISBN": 9781501110363,
+			"name": "THE BOOK OF UNUSUAL KNOWLEDGE",
+			"author": "Publications International Ltd.",
+			"publisher": "Publications International Ltd.",
+			"pages": 704,
+			"price": 20.37,
+			"commission": 0.55,
+			"amount": 100,
+			"genres": "NON_FICTION"
+		},
+		{
+			"ISBN": 9781501110362,
+			"name": "LET IT SNOW",
+			"author": "Beth Moran",
+			"publisher": "Boldwood Books",
+			"pages": 352,
+			"price": 27.99,
+			"commission": 0.85,
+			"amount": 100,
+			"genres": "COMEDY"
+		},
+		{
+			"ISBN": 9781501110361,
+			"name": "THE SILENT PATIENT",
+			"author": "Alex Michaelides",
+			"publisher": "Celadon Books",
+			"pages": 368,
+			"price": 21.99,
+			"commission": 0.75,
+			"amount": 100,
+			"genres": "MYSTERY"
+		},
+		{
+			"ISBN": 9781501110368,
+			"name": "FLYAWAY",
+			"author": "Desmond Bagley",
+			"publisher": "Collins Crime Club",
+			"pages": 336,
+			"price": 16.99,
+			"commission": 0.7,
+			"amount": 100,
+			"genres": "ACTION"
+		},
+		{
+			"ISBN": 9781501110350,
+			"name": "HAND SHADOW FUN",
+			"author": "Frank Jacobs",
+			"publisher": "Dover Publications",
+			"pages": 64,
+			"price": 3.25,
+			"commission": 0.45,
+			"amount": 100,
+			"genres": "EDUCATIONAL"
+		},
+		{
+			"ISBN": 9781501110340,
+			"name": "BEN ARCHER AND THE COSMIC FALL",
+			"author": "Rae Knightly",
+			"publisher": "Collections Canada",
+			"pages": 340,
+			"price": 14.99,
+			"commission": 0.75,
+			"amount": 100,
+			"genres": "SCI_FI"
+		},
+		{
+			"ISBN": 9781501110330,
+			"name": "ATOMIC HABITS",
+			"author": "James Clear",
+			"publisher": "Avery",
+			"pages": 320,
+			"price": 19.95,
+			"commission": 0.65,
+			"amount": 100,
+			"genres": "SELFHELP"
+		},
+		{
+			"ISBN": 9781501110320,
+			"name": "GIRAFFES CAN'T DANCE",
+			"author": "Giles Andreae",
+			"publisher": "Scholastic Canada",
+			"pages": 32,
+			"price": 9.99,
+			"commission": 0.75,
+			"amount": 100,
+			"genres": "CHILDREN"
+		},
+		{
+			"ISBN": 9781501110310,
+			"name": "WHERE EAGLES DARE",
+			"author": "Giles Andreae",
+			"publisher": "HarperCollins",
+			"pages": 352,
+			"price": 18.99,
+			"commission": 0.6,
+			"amount": 100,
+			"genres": "ADVENTURE"
+		},
+		{
+			"ISBN": 9781501110300,
+			"name": "AFTER ANNA",
+			"author": "Alex Lake",
+			"publisher": "One More Chapter",
+			"pages": 416,
+			"price": 11.87,
+			"commission": 0.5,
+			"amount": 100,
+			"genres": "CRIME"
+		},
+		{
+			"ISBN": 9781501110200,
+			"name": "IT: THE NOVEL",
+			"author": "Stephen King",
+			"publisher": "Scribner",
+			"pages": 1168,
+			"price": 47.00,
+			"commission": 0.5,
+			"amount": 100,
+			"genres": "HORROR"
+		},
+		{
+			"ISBN": 9781501110100,
+			"name": "TEEN GIRL'S SURVIVAL GUIDE",
+			"author": "Jenn Higgins",
+			"publisher": "Canyon Press",
+			"pages": 135,
+			"price": 16.99,
+			"commission": 0.8,
+			"amount": 100,
+			"genres": "YOUNG_ADULT"
+		},
+		{
+			"ISBN": 9781501110000,
+			"name": "THE FAULT IN OUR STARS",
+			"author": "John Green",
+			"publisher": "Dutton Books",
+			"pages": 313,
+			"price": 14.99,
+			"commission": 0.9,
+			"amount": 100,
+			"genres": "ROMANCE"
+		},
+		{
+			"ISBN": 9781501190000,
+			"name": "MASTERING THE ART OF JAPANESE HOME COOKING",
+			"author": "Masharu Morimoto",
+			"publisher": "Ecco",
+			"pages": 288,
+			"price": 56.00,
+			"commission": 0.85,
+			"amount": 100,
+			"genres": "COOKBOOK"
+		},
+		{
+			"ISBN": 9781501180000,
+			"name": "MINECRAFT VOLUME 1",
+			"author": "Sfe R. Monster",
+			"publisher": "Dark Horse Books",
+			"pages": 88,
+			"price": 14.84,
+			"commission": 0.95,
+			"amount": 100,
+			"genres": "COMICS"
 		}
 	]
 }

@@ -11,7 +11,8 @@ public class Book {
     private final int numOfPages;
     private final double price;
     private final double pubPercent;
-    public enum Genre {ACTION, ADVENTURE, COMEDY, CRIME, FICTION, HORROR, MYSTERY, ROMANCE, SCI_FI}
+    public enum Genre {ACTION, ADVENTURE, COMEDY, CRIME, FICTION, NON_FICTION, HORROR, MYSTERY, ROMANCE, SCI_FI,YOUNG_ADULT,
+        EDUCATIONAL, SELFHELP, CHILDREN, COOKBOOK, COMICS}
 
     public Book(long ISBN, String bookName, String authorName, Publisher publisher, int numOfPages, double price, double pubPercent){
         this.ISBN = ISBN;

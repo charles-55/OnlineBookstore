@@ -48,7 +48,7 @@ CREATE TABLE BillingInfo (
     Name        VARCHAR(100) NOT NULL,
     CardNum     NUMERIC(16, 0) NOT NULL,
     Address     VARCHAR(100) NOT NULL,
-    PRIMARY KEY CardNum
+    PRIMARY KEY (CardNum)
 );
 
 CREATE TABLE BookOrder (

@@ -1,5 +1,6 @@
 DROP TABLE Tracker;
 DROP TABLE BookOrder;
+DROP TABLE BillingInfo;
 DROP TABLE Basket;
 DROP TABLE Genre;
 DROP TABLE Book;

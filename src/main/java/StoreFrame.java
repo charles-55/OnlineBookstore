@@ -149,7 +149,7 @@ public class StoreFrame extends JFrame implements StoreView {
 
         contactPanel.add(new JLabel("Osamudiamen Nwoko: "));
         contactPanel.add(new JLabel("osamudiamennwoko@cmail.carleton.ca"));
-        contactPanel.add(new JLabel("Oyinda Taiwo-Olupeka: "));
+        contactPanel.add(new JLabel("Oyindamola Taiwo-Olupeka: "));
         contactPanel.add(new JLabel("oyindamolataiwoolupe@cmail.carleton.ca"));
 
         return contactPanel;

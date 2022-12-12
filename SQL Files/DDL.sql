@@ -44,17 +44,25 @@ CREATE TABLE Basket (
 	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
 );
 
+CREATE TABLE BillingInfo (
+    Name        VARCHAR(100) NOT NULL,
+    CardNum     NUMERIC(16, 0) NOT NULL,
+    Address     VARCHAR(100) NOT NULL,
+    PRIMARY KEY CardNum
+);
+
 CREATE TABLE BookOrder (
 	OrderNum		INT NOT NULL UNIQUE,
 	CustomerID		INT NOT NULL,
 	ISBN			NUMERIC(13, 0) NOT NULL UNIQUE,
 	Amount			INT NOT NULL,
 	TotalPrice	    NUMERIC(5, 2) NOT NULL,
-	BillingInfo		VARCHAR(100) NOT NULL,
+	BillingInfo		NUMERIC(16, 0) NOT NULL,
 	ShippingInfo	VARCHAR(100) NOT NULL,
 	PRIMARY KEY (OrderNum, ISBN),
 	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
-	FOREIGN KEY (ISBN) REFERENCES Book (ISBN)
+	FOREIGN KEY (ISBN) REFERENCES Book (ISBN),
+	FOREIGN KEY (BillingInfo) REFERENCES BillingInfo (CardNum)
 );
 
 CREATE TABLE Tracker (

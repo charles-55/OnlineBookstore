@@ -8,7 +8,7 @@ public class Tracker {
 
     public Tracker(int trackingNumber, User user, int orderNum) {
         this.trackingNumber = trackingNumber;
-        this.userID = user.getUserID();
+        this.userID = user.getID();
         this.orderNum = orderNum;
         status = Status.PLACED;
     }

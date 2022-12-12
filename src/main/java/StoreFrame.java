@@ -48,11 +48,10 @@ public class StoreFrame extends JFrame implements StoreView {
         mainPanel.add(topPanel);
         mainPanel.add(contentPanel);
         mainPanel.add(bottomPanel);
-        JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL);
 
-        this.setLayout(new BorderLayout());
-        this.add(mainPanel, BorderLayout.CENTER);
-        this.add(scrollBar, BorderLayout.EAST);
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+
+        this.add(scrollPane);
         this.pack();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -73,20 +72,24 @@ public class StoreFrame extends JFrame implements StoreView {
         infoPanel.add(getAccountPanel(model.getCurrentUser()), "Account");
         infoPanel.add(getOrderHistoryPanel(model.getCurrentUser()), "Orders");
         infoPanel.add(getContactPanel(), "Contact");
+        infoPanel.add(getAdminPanel(), "Admin");
         infoCardLayout.show(infoPanel, "Account");
 
-        JPanel menuPanel = new JPanel(new GridLayout(6, 1));
+        JPanel menuPanel = new JPanel(new GridLayout(7, 1));
         JButton account = new JButton("Account");
         JButton orders = new JButton("Order History");
         JButton contactUs = new JButton("Contact us");
         JButton changeUsername = new JButton("Change Username");
         JButton changePassword = new JButton("Change Password");
+        JButton adminControls = new JButton("Admin Controls");
         JButton signOut = new JButton("Sign out");
         menuPanel.add(account);
         menuPanel.add(orders);
         menuPanel.add(contactUs);
         menuPanel.add(changeUsername);
         menuPanel.add(changePassword);
+        if(model.getCurrentUser().isAdmin())
+            menuPanel.add(adminControls);
         menuPanel.add(signOut);
 
         account.addActionListener(e -> infoCardLayout.show(infoPanel, "Account"));
@@ -97,6 +100,7 @@ public class StoreFrame extends JFrame implements StoreView {
                 ((JLabel) ((JPanel) infoPanel.getComponent(0)).getComponent(3)).setText(model.getCurrentUser().getUsername());
         });
         changePassword.addActionListener(e -> changePassword());
+        adminControls.addActionListener(e -> infoCardLayout.show(infoPanel, "Admin"));
         signOut.addActionListener(e -> {
             signOut();
             ((JButton) (topPanel.getComponent(3))).setText("Sign out");
@@ -111,7 +115,7 @@ public class StoreFrame extends JFrame implements StoreView {
     private JPanel getAccountPanel(User user) {
         JPanel accountPanel = new JPanel(new GridLayout(2, 2));
         accountPanel.add(new JLabel("UserID: "));
-        accountPanel.add(new JLabel(String.valueOf(user.getUserID())));
+        accountPanel.add(new JLabel(String.valueOf(user.getID())));
         accountPanel.add(new JLabel("Username: "));
         accountPanel.add(new JLabel(user.getUsername()));
 
@@ -157,6 +161,33 @@ public class StoreFrame extends JFrame implements StoreView {
         return contactPanel;
     }
 
+    private JPanel getAdminPanel() {
+        JPanel adminPanel = new JPanel();
+        adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
+
+        JPanel inventoryControlPanel = new JPanel();
+        inventoryControlPanel.setLayout(new BoxLayout(inventoryControlPanel, BoxLayout.X_AXIS));
+        JButton addBook = new JButton("Add Book");
+        JButton removeBook = new JButton("Remove Book");
+        JButton updateTracker = new JButton("Update Tracker");
+        JButton viewReport = new JButton("View Report");
+        inventoryControlPanel.add(addBook);
+        inventoryControlPanel.add(removeBook);
+        inventoryControlPanel.add(updateTracker);
+        inventoryControlPanel.add(viewReport);
+
+        JPanel databaseControlPanel = new JPanel();
+        databaseControlPanel.setLayout(new BoxLayout(databaseControlPanel, BoxLayout.X_AXIS));
+        JButton addNewAdmin = new JButton("Add New Admin");
+        JButton wipeDatabase = new JButton("Wipe Database");
+
+        adminPanel.add(getCentreAlignedJLabel("Inventory Controls"));
+        adminPanel.add(inventoryControlPanel);
+        adminPanel.add(getCentreAlignedJLabel("Database Controls"));
+        adminPanel.add(databaseControlPanel);
+        return adminPanel;
+    }
+
     private void updateBrowsePanel() {
         if(browsePanel.getComponentCount() > 0)
             browsePanel.removeAll();
@@ -193,6 +224,7 @@ public class StoreFrame extends JFrame implements StoreView {
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
         JTextField searchBar = new JTextField();
+        searchBar.setMaximumSize(new Dimension(500, 50));
         JButton searchButton = new JButton("Search");
         JButton filters = new JButton("Filters");
 
@@ -256,13 +288,15 @@ public class StoreFrame extends JFrame implements StoreView {
             bookPanel.add(view);
 
             view.addActionListener(e -> {
-                JPanel panel = new JPanel(new GridLayout(6, 2));
+                JPanel panel = new JPanel(new GridLayout(7, 2));
                 panel.add(new JLabel("Name: "));
                 panel.add(new JLabel(book.getBookName().replace("\"", "")));
                 panel.add(new JLabel("Author: "));
                 panel.add(new JLabel(book.getAuthorName().replace("\"", "")));
                 panel.add(new JLabel("Publisher: "));
                 panel.add(new JLabel(book.getPublisher().getName().replace("\"", "")));
+                panel.add(new JLabel("Genre: "));
+                panel.add(new JLabel(book.getGenre().toString()));
                 panel.add(new JLabel("Number of pages: "));
                 panel.add(new JLabel(String.valueOf(book.getNumOfPages())));
                 panel.add(new JLabel("ISBN: "));
@@ -528,6 +562,28 @@ public class StoreFrame extends JFrame implements StoreView {
     }
 
     private boolean signIn() {
+        JPanel adminOrUser = new JPanel(new BorderLayout());
+        adminOrUser.add(getCentreAlignedJLabel("Sign in as admin or user:"), BorderLayout.NORTH);
+
+        JButton admin = new JButton("Sign in");
+        JButton user = new JButton("Sign up");
+        adminOrUser.add(admin, BorderLayout.WEST);
+        adminOrUser.add(user, BorderLayout.EAST);
+
+        AtomicInteger i = new AtomicInteger(-1);
+        admin.addActionListener(e -> {
+            i.set(0);
+            admin.setBackground(Color.GREEN);
+            user.setBackground(null);
+        });
+        user.addActionListener(e -> {
+            i.set(1);
+            admin.setBackground(null);
+            user.setBackground(Color.GREEN);
+        });
+
+        JOptionPane.showMessageDialog(this, adminOrUser);
+
         JPanel signInPanel = new JPanel(new GridLayout(2, 2));
         JTextField username = new JTextField(25);
         JTextField password = new JTextField(16);
@@ -539,7 +595,12 @@ public class StoreFrame extends JFrame implements StoreView {
 
         JOptionPane.showMessageDialog(this, signInPanel);
 
-        boolean b = model.signIn(username.getText(), password.getText());
+        boolean b = false;
+        if(Integer.parseInt(String.valueOf(i)) == 0)
+            b = model.signIn(username.getText(), password.getText(), true);
+        else if(Integer.parseInt(String.valueOf(i)) == 0)
+            b = model.signIn(username.getText(), password.getText(), false);
+
         if(b)
             JOptionPane.showMessageDialog(this, "Sign in successful!");
         else
@@ -575,7 +636,7 @@ public class StoreFrame extends JFrame implements StoreView {
             return false;
         }
 
-        boolean b = model.addUser(username.getText(), password.getText()) && model.signIn(username.getText(), password.getText());
+        boolean b = model.addUser(username.getText(), password.getText()) && model.signIn(username.getText(), password.getText(), false);
         if(b)
             JOptionPane.showMessageDialog(this, "Sign up successful!");
         else

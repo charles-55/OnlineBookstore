@@ -75,8 +75,7 @@ public class StoreFrame extends JFrame implements StoreView {
         infoPanel.add(getContactPanel(), "Contact");
         infoCardLayout.show(infoPanel, "Account");
 
-        JPanel menuPanel = new JPanel();
-        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+        JPanel menuPanel = new JPanel(new GridLayout(6, 1));
         JButton account = new JButton("Account");
         JButton orders = new JButton("Order History");
         JButton contactUs = new JButton("Contact us");
@@ -93,7 +92,10 @@ public class StoreFrame extends JFrame implements StoreView {
         account.addActionListener(e -> infoCardLayout.show(infoPanel, "Account"));
         orders.addActionListener(e -> infoCardLayout.show(infoPanel, "Orders"));
         contactUs.addActionListener(e -> infoCardLayout.show(infoPanel, "Contact"));
-        changeUsername.addActionListener(e -> changeUsername());
+        changeUsername.addActionListener(e -> {
+            if(changeUsername())
+                ((JLabel) ((JPanel) infoPanel.getComponent(0)).getComponent(3)).setText(model.getCurrentUser().getUsername());
+        });
         changePassword.addActionListener(e -> changePassword());
         signOut.addActionListener(e -> {
             signOut();
@@ -271,6 +273,7 @@ public class StoreFrame extends JFrame implements StoreView {
             updateCheckoutPanel(total);
             cardLayout.show(contentPanel, "Checkout");
         });
+        basketPanel.add(checkOut);
         basketPanel.updateUI();
     }
 
@@ -516,9 +519,15 @@ public class StoreFrame extends JFrame implements StoreView {
             JOptionPane.showMessageDialog(this, "Password change failed!");
     }
 
-    private void changeUsername() {
-        model.getCurrentUser().setUsername(JOptionPane.showInputDialog("Enter new username:"));
-        JOptionPane.showMessageDialog(this, "Username updated!");
+    private boolean changeUsername() {
+        String newName = JOptionPane.showInputDialog("Enter new username:");
+        if(newName.length() > 0) {
+            model.getCurrentUser().setUsername(newName);
+            JOptionPane.showMessageDialog(this, "Username updated!");
+            return true;
+        }
+        JOptionPane.showMessageDialog(this, "Username update failed!");
+        return false;
     }
 
     @Override

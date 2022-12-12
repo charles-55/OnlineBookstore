@@ -2,24 +2,115 @@
 	"publishers": [
 		{
 			"name": "HarperCollins",
-			"address": "HarperCollins Publishers, 53 Glenmaura National Blvd, Moosic, PA 18507",
+			"address": "HarperCollins Publishers, 195 Broadway, New York, NY 10007, US",
 			"email": "HCOrder@harpercollins.com",
 			"phoneNumber": 8443275757,
-			"account": 65508
+			"account": 6550818
 		},
 		{
 			"name": "Knopf Doubleday Publishing Group",
-			"address": "1745 Broadway New York, NY 10019",
+			"address": "1745 Broadway, New York, NY 10019, United States",
 			"email": "knopfpublicity@randomhouse.com",
 			"phoneNumber": 2129407390,
-			"account": 95624
+			"account": 9562423
 		},
 		{
-			"name": "Penguin Canada",
-			"address": "320 Front St W #1400, Toronto, ON M5V 3B6",
+			"name": "Penguin Random House",
+			"address": "320 Front St W #1400, Toronto, ON M5V 3B6, Canada",
 			"email": "customerservicescanada@penguinrandomhouse.com",
 			"phoneNumber": 8885239292,
 			"account": 5615163
+		},
+		{
+			"name": "Atria Books",
+			"address": "1230 Avenue of the Americas Rm 13-052a, New York, NY, 10020, United States",
+			"email": "atriapublicity@simonandschuster.com",
+			"phoneNumber": 2126987566,
+			"account": 5615162
+		},
+		{
+			"name": "Publications International Ltd.",
+			"address": "8140 Lehigh Ave, Morton Grove, IL 60053, United States",
+			"email": "customer_service@pubint.com",
+			"phoneNumber": 8476763470,
+			"account": 5615161
+		},
+		{
+			"name": "Boldwood Books",
+			"address": "23 Bowerdean St, London, SW6 3TN, United Kingdom",
+			"email": "info@boldwoodbooks.com",
+			"phoneNumber": 7785115136,
+			"account": 5615160
+		},
+		{
+			"name": "Celadon Books",
+			"address": "120 Broadway 23rd Floor, New York, NY 10271, United States",
+			"email": "contact@celadonbooks.com",
+			"phoneNumber": 6463075066,
+			"account": 5615150
+		},
+		{
+			"name": "Dover Publication",
+			"address": "1325 Franklin Ave Ste 250, Garden City, NY 11530, United States",
+			"email": "contact@doverpublications.com",
+			"phoneNumber": 5167425049,
+			"account": 5615120
+		},
+		{
+			"name": "Collections Canada",
+			"address": "395 Wellington St, Ottawa, ON K1A 0N4, Canada",
+			"email": "webservices@lac-bac.gc.ca",
+			"phoneNumber": 6139965115,
+			"account": 5615110
+		},
+		{
+			"name": "Scholastica Canada",
+			"address": "350 N Lasalle Ste 210, Chicago, IL 60654, United States",
+			"email": "contact@scholastica.com",
+			"phoneNumber": 8505970976,
+			"account": 5615000
+		},
+		{
+			"name": "One More Chapter",
+			"address": "Westerhill Road, Bishopsbriggs, Glasgow G64 2QT, United Kingdom",
+			"email": "onemorechapter@harpercollins.com",
+			"phoneNumber": 2083074263,
+			"account": 5614000
+		},
+		{
+			"name": "Simon & Schuster",
+			"address": "166 King Street East Suite 300, Toronto, ON M5A 1J3, Canada",
+			"email": "ScribnerPublicity@SimonandSchuster.com",
+			"phoneNumber": 6474278882,
+			"account": 5613000
+		},
+		{
+			"name": "Canyon Press",
+			"address": "Building 313 Fort Worden State Park, Port Townsend, WA 98368, United States",
+			"email": "books@canyonpress.com",
+			"phoneNumber": 3603854925,
+			"account": 5613001
+		},
+		{
+			"name": "Dutton Books",
+			"address": "375 Hudson Street, New York, NY 10014, United States",
+			"email": "duttonbooks@penguinrandomhouse.com",
+			"phoneNumber": 2123662792,
+			"account": 5613002
+		},
+		{
+			"name": "Ecco",
+			"address": "10 E. 53rd Street, New York, NY 10022, United States",
+			"email": "ecco@harpercollins.com",
+			"phoneNumber": 2122077000,
+			"account": 5613003
+		},
+		{
+			"name": "Dark Horse Books",
+			"address": "Dark Horse Comics 10956 SE Main Street, Milwaukie, OR 97222, United States",
+			"email": "digital.service@darkhorse.com",
+			"phoneNumber": 5036528815,
+			"account": 5613004
 		}
 	],
 	
@@ -39,7 +130,7 @@
 			"ISBN": 9780735245341,
 			"name": "OUR MISSING HEARTS: A NOVEL",
 			"author": "Celeste Ng",
-			"publisher": "Penguin Canada",
+			"publisher": "Penguin Random House",
 			"pages": 352,
 			"price": 21.60,
 			"commission": 0.10,
@@ -116,7 +207,7 @@
 			"ISBN": 9781501110368,
 			"name": "FLYAWAY",
 			"author": "Desmond Bagley",
-			"publisher": "Collins Crime Club",
+			"publisher": "HarperCollins",
 			"pages": 336,
 			"price": 16.99,
 			"commission": 0.7,
@@ -149,7 +240,7 @@
 			"ISBN": 9781501110330,
 			"name": "ATOMIC HABITS",
 			"author": "James Clear",
-			"publisher": "Avery",
+			"publisher": "Penguin Random House",
 			"pages": 320,
 			"price": 19.95,
 			"commission": 0.65,
@@ -160,7 +251,7 @@
 			"ISBN": 9781501110320,
 			"name": "GIRAFFES CAN'T DANCE",
 			"author": "Giles Andreae",
-			"publisher": "Scholastic Canada",
+			"publisher": "Scholastica Canada",
 			"pages": 32,
 			"price": 9.99,
 			"commission": 0.75,
@@ -193,7 +284,7 @@
 			"ISBN": 9781501110200,
 			"name": "IT: THE NOVEL",
 			"author": "Stephen King",
-			"publisher": "Scribner",
+			"publisher": "Simon & Schuster",
 			"pages": 1168,
 			"price": 47.00,
 			"commission": 0.5,

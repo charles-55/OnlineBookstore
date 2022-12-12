@@ -6,4 +6,4 @@
 #### Oyindamola Taiwo-Olupeka 
 
 
-### Instructions For Running The Code
+### Instructions For Running The Application

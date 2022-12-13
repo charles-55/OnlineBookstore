@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreFrame extends JFrame implements StoreView {
@@ -279,7 +278,7 @@ public class StoreFrame extends JFrame implements StoreView {
             if(isbn.getText().length() != 13){
                 JOptionPane.showMessageDialog(this, "ISBN length is invalid\nTry again!");
             }
-            else if (amount.getText() == "0"){
+            else if (amount.getText().equals("0")){
                 JOptionPane.showMessageDialog(this, "Amount is invalid\nTry again!");
             }
 
@@ -339,11 +338,7 @@ public class StoreFrame extends JFrame implements StoreView {
                 }
             }
 
-            //If tracker num exist, display the status then display another Joption pane
-            //that allows the admin to select a new status with choic bar
-
             updateTrackerPanel.add(updateTrackerInputPanel);
-
 
             JOptionPane.showInputDialog("Input Tracking Information");
         });
@@ -363,19 +358,27 @@ public class StoreFrame extends JFrame implements StoreView {
     }
 
     private Publisher createNewPublisher(){
-        JPanel newPublisher = new JPanel(new GridLayout(5,2));
+        JPanel newPublisherPanel = new JPanel(new GridLayout(5,2));
         JTextField name = new JTextField();
         JTextField address = new JTextField();
         JTextField email = new JTextField();
         JTextField phoneNumber = new JTextField();
         JTextField bankingAccount = new JTextField();
-        //JOptionPane
 
-        //Publisher publisher = new Publisher();
-        //return publisher;
-        return null;
+        newPublisherPanel.add(new JLabel("Name: "));
+        newPublisherPanel.add(name);
+        newPublisherPanel.add(new JLabel("Address: "));
+        newPublisherPanel.add(address);
+        newPublisherPanel.add(new JLabel("Email: "));
+        newPublisherPanel.add(email);
+        newPublisherPanel.add(new JLabel("Phone Number: "));
+        newPublisherPanel.add(phoneNumber);
+        newPublisherPanel.add(new JLabel("Banking Account: "));
+        newPublisherPanel.add(bankingAccount);
 
-
+        JOptionPane.showMessageDialog(this,newPublisherPanel);
+        return new Publisher(name.getText(), address.getText(), email.getText(),
+                Long.parseLong(phoneNumber.getText()), Long.parseLong(bankingAccount.getText()));
     }
 
     private void updateBrowsePanel() {

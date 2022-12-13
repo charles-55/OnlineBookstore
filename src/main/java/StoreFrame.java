@@ -375,6 +375,7 @@ public class StoreFrame extends JFrame implements StoreView {
         //return publisher;
         return null;
 
+
     }
 
     private void updateBrowsePanel() {

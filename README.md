@@ -11,7 +11,7 @@ There are different ways for you to setup the database:
 ### Option 1:
 1. Create a database server in port 5433 on your device.
 2. Create a user called "postgres" (done automatically by pgAdmin).
-3. Set the password to "1234"
+3. Set the password to "1234".
 4. Add a new database called "COMP3005Project" to the server.
 
 ### Option 2:

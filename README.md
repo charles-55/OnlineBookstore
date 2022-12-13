@@ -27,6 +27,9 @@ Option 2:
 - If you want to change the username and/or password, it would have to be edited in the ConnectionManager class (lines 29 & 30)
 
 Option 3:
+- Make a pull request from this repository into your favourite version control IDE (e.g Intellij, Visual Studio Code)
+- Setup your database connection
+- Run the code in the main class
 
 
 

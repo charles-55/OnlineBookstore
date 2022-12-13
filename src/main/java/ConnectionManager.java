@@ -78,7 +78,7 @@ public class ConnectionManager {
 
                 for(Object object : publishers) {
                     JsonObject jsonObject = (JsonObject) object;
-                    Publisher publisher = new Publisher(jsonObject.get("name").toString().replace("\"", "").toUpperCase(), jsonObject.get("address").toString(), jsonObject.get("email").toString(), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
+                    Publisher publisher = new Publisher(jsonObject.get("name").toString().replace("\"", "").toUpperCase(), jsonObject.get("address").toString().replace("\"",""), jsonObject.get("email").toString().replace("\"",""), Long.parseLong(jsonObject.get("phoneNumber").toString()), Long.parseLong(jsonObject.get("account").toString()));
                     model.addPublisher(publisher);
                 }
 

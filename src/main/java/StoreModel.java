@@ -63,11 +63,7 @@ public class StoreModel {
     }
 
     public boolean addUser(String username, String password, boolean isAdmin) {
-        User user;
-        if(isAdmin)
-            user = new Admin(users.size() + 1, username, password);
-        else
-            user = new User(users.size() + 1, username, password);
+        User user = new User(users.size() + 1, username, password, isAdmin);
         if(CONNECTION_MANAGER.execute("INSERT INTO Customer VALUES (" + user.getSQLStringRepresentation() + ");")) {
             users.add(user);
             return true;
@@ -395,8 +391,9 @@ public class StoreModel {
             else
                 query += " AND Admin = 'NO'";
             ResultSet resultSet = CONNECTION_MANAGER.executeQuery(query);
-            resultSet.next();
-            int userID = resultSet.getInt("CustomerID");
+            int userID = -1;
+            if(resultSet.next())
+                userID = resultSet.getInt("CustomerID");
             for (User user : users) {
                 if(user.getID() == userID) {
                     currentUser = user;

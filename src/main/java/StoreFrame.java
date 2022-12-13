@@ -351,6 +351,10 @@ public class StoreFrame extends JFrame implements StoreView {
         databaseControlPanel.add(addNewAdmin);
         databaseControlPanel.add(wipeDatabase);
 
+        addNewAdmin.addActionListener(e -> signup(true));
+
+        wipeDatabase.addActionListener(e -> model.getCONNECTION_MANAGER().cleanDatabase());
+
         adminPanel.add(getCentreAlignedJLabel("Inventory Controls"));
         adminPanel.add(inventoryControlPanel);
         adminPanel.add(getCentreAlignedJLabel("Database Controls"));
@@ -755,7 +759,7 @@ public class StoreFrame extends JFrame implements StoreView {
         if((Integer.parseInt(String.valueOf(i))) == 0)
             b = signIn();
         else if(Integer.parseInt(String.valueOf(i)) == 1)
-            b = signup();
+            b = signup(false);
 
         if(b)
             ((JButton) (topPanel.getComponent(3))).setText("Sign out");
@@ -817,7 +821,7 @@ public class StoreFrame extends JFrame implements StoreView {
         updateBasketPanel();
     }
 
-    private boolean signup() {
+    private boolean signup(boolean isAdmin) {
         JPanel signupPanel = new JPanel();
         signupPanel.setLayout(new BoxLayout(signupPanel, BoxLayout.Y_AXIS));
         JPanel inputPanel = new JPanel(new GridLayout(2, 2));
@@ -837,9 +841,12 @@ public class StoreFrame extends JFrame implements StoreView {
             return false;
         }
 
-        boolean b = model.addUser(username.getText(), password.getText(), false) && model.signIn(username.getText(), password.getText(), false);
-        if(b)
+        boolean b = model.addUser(username.getText(), password.getText(), false);
+        if(b) {
             JOptionPane.showMessageDialog(this, "Sign up successful!");
+            if(!isAdmin)
+                b = model.signIn(username.getText(), password.getText(), false);
+        }
         else
             JOptionPane.showMessageDialog(this, "Sign up failed!");
         return b;

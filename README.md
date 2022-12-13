@@ -15,7 +15,7 @@ Option 1:
 4. Add a new database called "COMP3005Project" to the server.
 
 Option 2:
-Create your database using your preferred information (modify the ConnectionManager according to your configuration).
+- Create your database using your preferred information (modify the ConnectionManager according to your configuration).
 
 
 ## Instructions For Running The Application

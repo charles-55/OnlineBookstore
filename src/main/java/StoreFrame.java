@@ -52,7 +52,7 @@ public class StoreFrame extends JFrame implements StoreView {
         JScrollPane scrollPane = new JScrollPane(mainPanel);
 
         this.add(scrollPane);
-        this.pack();
+        this.setSize(getMaximumSize());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }

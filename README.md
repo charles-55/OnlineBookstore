@@ -2,36 +2,37 @@
 
 ### Authors
 #### Osamudiamen Nwoko 
-
 #### Oyindamola Taiwo-Olupeka 
 
-
-### Instructions For Running The Application
-
-
-There are different ways for you to run the the application:
+### Instructions For Setting Up The Database
+There are different ways for you to setup the database:
 
 Option 1:
-- Make a pull request from this repository into your favourite version control IDE (e.g Intellij, Visual Studio Code)
-- Setup your database connection
-- Run the code in the main class
+1. Create a database server in port 5433 on your device.
+2. Create a user called "postgre" (done automatically by pgAdmin).
+3. Set the password to "1234"
+4. Add a new database called "COMP3005Project" to the server.
 
 Option 2:
-- Go into the the JAR file and extract the src files
-- Open the ConnectionManagar class in src folder and edit the DB_URL (line 26) which is static variable to be a database in your own pgAdmin so it is personalised for each user.
-- If you have not already, create DataBase in your pgAdmin variable e.g "COMP3005project"
-- Lastly, run main class.
+Create your database using your preferred information (modify the ConnectionManager according to your configuration).
 
+### Instructions For Running The Application
+There are different ways for you to run the the application:
+
+Option 1 (Best):
+1. Setup your database connection.
+2. Make a pull request from this repository into your favourite version control IDE (e.g Intellij, Visual Studio Code).
+3. Modify the ConnectionManger.java class if you used option 2 to set up the database.
+4. Run the code in the Main.java class.
+
+Option 2:
+1. Setup your database connection using option 1.
+2. Download the JAR file.
+3. Open the JAR file location in your terminal.
+4. Run the command "java OnlineBookstore.jar".
 
 Option 3:
-- Create a database in your pgAdmin application called COMP3005project in port 5433 which has the exact url as what is written in the ConnectionManager
-- The login details are as folows:
-  USER = "postgres";
-  PASSWORD = "1234";
-
-- If you want to change the username and/or password, it would have to be edited in the ConnectionManager class (lines 29 & 30)
-
-
-
-
-
+1. Setup your database connection using option 2.
+2. Download the JAR file and extract its contents.
+3. Modify the ConnectionManager.java to have your configured database settings.
+4. Run the Main.java class.

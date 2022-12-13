@@ -33,7 +33,7 @@ There are different ways for you to run the the application:
 3. Open the JAR file location in your terminal.
 4. Run the command "java OnlineBookstore.jar".
 
-Option 3:
+### Option 3:
 1. Setup your database connection using option 2.
 2. Download the JAR file and extract its contents.
 3. Modify the ConnectionManager.java to have your configured database settings.

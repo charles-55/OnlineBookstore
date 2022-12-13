@@ -40,3 +40,8 @@ There are different ways for you to run the application:
 2. Download the JAR file and extract its contents.
 3. Modify the ConnectionManager.java to have your configured database settings.
 4. Run the Main.java class.
+
+
+## For TA
+- To sign in as an admin, the username is "TA" and the password is "123456".
+- NOTE: Only admins can add new admins. There are previously defined admins.

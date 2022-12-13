@@ -214,6 +214,7 @@ public class StoreFrame extends JFrame implements StoreView {
             JOptionPane.showMessageDialog(this, addBookPanel, "Add Book",JOptionPane.ERROR_MESSAGE);
             if(isbn.getText().length() != 13){
                 JOptionPane.showMessageDialog(this, "ISBN length is invalid\nTry again!");
+                return;
             }
             else if (amount.getText().equals("0")){
                 JOptionPane.showMessageDialog(this, "Amount is invalid\nTry again!");
@@ -377,8 +378,11 @@ public class StoreFrame extends JFrame implements StoreView {
         newPublisherPanel.add(bankingAccount);
 
         JOptionPane.showMessageDialog(this,newPublisherPanel);
-        return new Publisher(name.getText(), address.getText(), email.getText(),
+        Publisher publisher = new Publisher(name.getText(), address.getText(), email.getText(),
                 Long.parseLong(phoneNumber.getText()), Long.parseLong(bankingAccount.getText()));
+
+        model.addPublisher(publisher);
+        return publisher;
     }
 
     private void updateBrowsePanel() {

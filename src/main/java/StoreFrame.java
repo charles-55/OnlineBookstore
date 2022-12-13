@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreFrame extends JFrame implements StoreView {
@@ -177,13 +178,174 @@ public class StoreFrame extends JFrame implements StoreView {
         inventoryControlPanel.add(viewReport);
 
         addBook.addActionListener(e -> {
-            JPanel panel = new JPanel(new GridLayout());
+            JPanel addBookPanel = new JPanel();
             JTextField isbn = new JTextField(13);
             JTextField name = new JTextField();
             JTextField author = new JTextField();
-            JTextField genre = new JTextField();
             JTextField publisher = new JTextField();
+            JTextField genre = new JTextField();
             JTextField pages = new JTextField();
+            JTextField price = new JTextField();
+            JTextField pubPercent = new JTextField();
+            JTextField amount = new JTextField();
+
+            JPanel addBookInputPanel = new JPanel(new GridLayout(9,2));
+            addBookInputPanel.add(new JLabel("ISBN: "));
+            addBookInputPanel.add(isbn);
+            addBookInputPanel.add(new JLabel("Name: "));
+            addBookInputPanel.add(name);
+            addBookInputPanel.add(new JLabel("Author: "));
+            addBookInputPanel.add(author);
+            addBookInputPanel.add(new JLabel("Publisher: "));
+            addBookInputPanel.add(publisher);
+            addBookInputPanel.add(new JLabel("Genre: "));
+            addBookInputPanel.add(genre);
+            addBookInputPanel.add(new JLabel("Number of Pages: "));
+            addBookInputPanel.add(pages);
+            addBookInputPanel.add(new JLabel("Price: "));
+            addBookInputPanel.add(price);
+            addBookInputPanel.add(new JLabel("Publisher Percentage: "));
+            addBookInputPanel.add(pubPercent);
+            addBookInputPanel.add(new JLabel("Amount: "));
+            addBookInputPanel.add(amount);
+
+            addBookPanel.add(addBookInputPanel);
+            addBookPanel.add(new JLabel("ISBN should be 13 digits and Amount should be greater than 0"));
+
+            JOptionPane.showMessageDialog(this, addBookPanel, "Add Book",JOptionPane.ERROR_MESSAGE);
+            if(isbn.getText().length() != 13){
+                JOptionPane.showMessageDialog(this, "ISBN length is invalid\nTry again!");
+            }
+            else if (amount.getText().equals("0")){
+                JOptionPane.showMessageDialog(this, "Amount is invalid\nTry again!");
+            }
+
+            Publisher p = null;
+
+            for(Publisher publisher1 : model.getPublishers() ){
+                if(publisher1.getName().equals(publisher.getText().toUpperCase())){
+                    p = publisher1;
+                    break;
+                }
+            }
+
+            if(p == null){
+                JOptionPane.showMessageDialog(this, "Publisher not in Database\n Add New Publisher!");
+                p = createNewPublisher();
+            }
+
+            Book.Genre g = Book.Genre.UNKNOWN;
+
+            for(Book.Genre genre1 : Book.Genre.values()){
+                if(genre1.toString().equals(genre.getText().toUpperCase())){
+                    g = genre1;
+                    break;
+                }
+            }
+
+            if(g == Book.Genre.UNKNOWN){
+                JOptionPane.showMessageDialog(this, "Genre Input is Unknown");
+            }
+
+            Book book = new Book(Long.parseLong(isbn.getText()), name.getText(), author.getText(),p,g,
+                    Integer.parseInt(pages.getText()),Double.parseDouble(price.getText()), Double.parseDouble(pubPercent.getText()));
+
+            boolean b = model.addToInventory(book, Integer.parseInt(amount.getText()));
+
+            if(b) {
+                JOptionPane.showMessageDialog(this, "Book(s) Has Been Added To The Inventory!");
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Book(s) Was Not Added To The Inventory!");
+            }
+
+        });
+
+        removeBook.addActionListener(e -> {
+            JPanel removeBookPanel = new JPanel();
+            JTextField isbn = new JTextField(13);
+            JTextField amount = new JTextField();
+
+            JPanel removeBookInputPanel = new JPanel(new GridLayout(2,2));
+            removeBookInputPanel.add(new JLabel("ISBN: "));
+            removeBookInputPanel.add(isbn);
+            removeBookInputPanel.add(new JLabel("Amount: "));
+            removeBookInputPanel.add(amount);
+
+            removeBookPanel.add(removeBookInputPanel);
+            removeBookPanel.add(new JLabel("ISBN should be 13 digits and Amount should be greater than 0"));
+
+            JOptionPane.showMessageDialog(this, removeBookPanel, "Remove Book",JOptionPane.ERROR_MESSAGE);
+            if(isbn.getText().length() != 13){
+                JOptionPane.showMessageDialog(this, "ISBN length is invalid\nTry again!");
+            }
+            else if (amount.getText() == "0"){
+                JOptionPane.showMessageDialog(this, "Amount is invalid\nTry again!");
+            }
+
+            Book book = null;
+            for(Book b : model.getInventory().keySet()){
+                if(b.getISBN() == Long.parseLong(isbn.getText())){
+                    book = b;
+                    break;
+                }
+            }
+
+            if(book == null){
+                JOptionPane.showMessageDialog(this, "Book Not Found!");
+            }
+            else{
+                boolean b = model.removeFromInventory(book, Integer.parseInt(amount.getText()));
+
+                if(b) {
+                    JOptionPane.showMessageDialog(this, "Book(s) Has Been Removed From The Inventory!");
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Book(s) Was Not Removed The Inventory!");
+                }
+            }
+        });
+
+        updateTracker.addActionListener(e -> {
+            JPanel updateTrackerPanel = new JPanel(new GridLayout(2,2));
+            JTextField trackerNum = new JTextField();
+            JTextField status = new JTextField();
+
+            JPanel updateTrackerInputPanel = new JPanel();
+            updateTrackerInputPanel.add(new JLabel("Tracking Number"));
+            updateTrackerInputPanel.add(trackerNum);
+            updateTrackerInputPanel.add(new JLabel());
+
+            Tracker.Status s = Tracker.Status.UNKNOWN;
+
+            for(Tracker.Status status1 : Tracker.Status.values()){
+                if(status1.toString().equals(status.getText().toUpperCase())){
+                    s = status1;
+                    break;
+                }
+            }
+
+            if(s == Tracker.Status.UNKNOWN){
+                JOptionPane.showMessageDialog(this, "Status is Unknown");
+            }
+            else{
+                boolean b = model.updateTrackerStatus(Integer.parseInt(trackerNum.getText()), s);
+
+                if(b){
+                    JOptionPane.showMessageDialog(this, "Tracker Updated!");
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,"Tracker failed to update!");
+                }
+            }
+
+            //If tracker num exist, display the status then display another Joption pane
+            //that allows the admin to select a new status with choic bar
+
+            updateTrackerPanel.add(updateTrackerInputPanel);
+
+
+            JOptionPane.showInputDialog("Input Tracking Information");
         });
 
         JPanel databaseControlPanel = new JPanel();
@@ -198,6 +360,21 @@ public class StoreFrame extends JFrame implements StoreView {
         adminPanel.add(getCentreAlignedJLabel("Database Controls"));
         adminPanel.add(databaseControlPanel);
         return adminPanel;
+    }
+
+    private Publisher createNewPublisher(){
+        JPanel newPublisher = new JPanel(new GridLayout(5,2));
+        JTextField name = new JTextField();
+        JTextField address = new JTextField();
+        JTextField email = new JTextField();
+        JTextField phoneNumber = new JTextField();
+        JTextField bankingAccount = new JTextField();
+        //JOptionPane
+
+        //Publisher publisher = new Publisher();
+        //return publisher;
+        return null;
+
     }
 
     private void updateBrowsePanel() {

@@ -6,4 +6,4 @@
 #### Oyindamola Taiwo-Olupeka 
 
 
-### Instructions For Running The Code
+Please Switch To The Maven Branch For The Most Up-To-Date Version Of the Online Bookstore.

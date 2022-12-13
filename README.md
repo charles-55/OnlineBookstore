@@ -5,7 +5,7 @@
 #### Oyindamola Taiwo-Olupeka
 
 
-### Instructions For Setting Up The Database
+## Instructions For Setting Up The Database
 There are different ways for you to setup the database:
 
 Option 1:
@@ -18,7 +18,7 @@ Option 2:
 Create your database using your preferred information (modify the ConnectionManager according to your configuration).
 
 
-### Instructions For Running The Application
+## Instructions For Running The Application
 There are different ways for you to run the the application:
 
 Option 1 (Best):

@@ -1,12 +1,14 @@
 # OnlineBookstore
 
+A graphics-based online bookstore programmed using the Java programming language and postgresSQL as the backend database. 
+
 ## Authors
 #### Osamudiamen Nwoko 
 #### Oyindamola Taiwo-Olupeka
 
 
 ## Instructions For Setting Up The Database
-There are different ways for you to setup the database:
+There are different ways for you to set up the database:
 
 ### Option 1:
 1. Create a database server in port 5433 on your device.
@@ -19,11 +21,11 @@ There are different ways for you to setup the database:
 
 
 ## Instructions For Running The Application
-There are different ways for you to run the the application:
+There are different ways for you to run the application:
 
 ### Option 1 (Best):
 1. Setup your database connection.
-2. Make a pull request from this repository into your favourite version control IDE (e.g Intellij, Visual Studio Code).
+2. Make a pull request from this repository into your favourite version control IDE (e.g. Intellij, Visual Studio Code).
 3. Modify the ConnectionManger.java class if you used option 2 to set up the database.
 4. Run the code in the Main.java class.
 
